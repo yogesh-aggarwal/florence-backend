@@ -1,0 +1,7 @@
+Common operators:
+
+$and
+$or / $nor
+$eq / $neq
+$in / $nin
+$elemMatch
