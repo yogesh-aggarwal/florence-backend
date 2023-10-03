@@ -2,15 +2,21 @@ import express from "express";
 import { config } from "dotenv";
 import cors from "cors";
 import mongoose from "mongoose";
-import { deleteAccount, login, signUp } from "./routes/auth";
+import { deleteAccount, login, loginWithGoogle, signUp } from "./routes/auth";
 import {
   getProductById,
   getProductsByTitle,
   getProducts,
   getTrendingProducts,
   getProductsByCategory,
+  getProductByIds,
 } from "./routes/product";
-import { createOrder, placeOrder } from "./routes/orders";
+import {
+  createOrder,
+  getOrderById,
+  getOrderByUserId,
+  placeOrder,
+} from "./routes/orders";
 
 config();
 // Configurations
@@ -28,11 +34,17 @@ app.post("/signUp", signUp);
 app.post("/deleteAccount", deleteAccount);
 app.get("/getProducts", getProducts);
 app.post("/getProductById", getProductById);
+app.post("/getProductByIds", getProductByIds);
 app.post("/getProductsByTitle", getProductsByTitle);
 app.get("/getTrendingProducts", getTrendingProducts);
 app.post("/getProductsByCategory", getProductsByCategory);
 app.post("/order", createOrder);
 app.post("/orderPlaced", placeOrder);
+app.post("/getOrderById", getOrderById);
+app.post("/getOrderByUserId", getOrderByUserId);
+
+app.post("/loginWithGoogle", loginWithGoogle);
+
 //addSampleProducts
 
 // Setup

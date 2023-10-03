@@ -38,8 +38,6 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     trim: true,
-    minLength: [8, "Password must of minimum 8 length"],
-    required: true,
   },
   name: {
     type: String,
@@ -57,6 +55,10 @@ const UserSchema = new mongoose.Schema({
       required: true,
     },
   ],
+  dp: {
+    type: String,
+    trim: true,
+  },
 });
 
 export const User = mongoose.model("users", UserSchema);

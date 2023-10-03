@@ -3,8 +3,11 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import { generatePasswordHash, validatePassword } from "../core/utils";
 import { User } from "../models/user";
+import { config } from "dotenv";
+import { OAuth2Client } from "google-auth-library";
 
-const jwtSecretKey = "6ade6ec820c571e8c9a6dc955fc59988";
+config();
+const jwtSecretKey = process.env.JWTSECRETKEY;
 
 /**
  * 1. Get the body
@@ -18,6 +21,13 @@ const jwtSecretKey = "6ade6ec820c571e8c9a6dc955fc59988";
  * 6. Encyrpt the retrieved user data in a JWT token
  * 7. Return the generated JWT token
  */
+
+/**
+ * created for the open authentication google
+ */
+const client = new OAuth2Client(
+  "609441188878-gj7sj9mht2a7f0h2qg266f3dn1739mfs.apps.googleusercontent.com"
+);
 
 export async function login(req, res) {
   // Step 1: Extract information from body & validate them
@@ -96,6 +106,7 @@ export async function signUp(req, res) {
     name: name,
     mobileNumbers: [],
     deliveryAddresses: [],
+    dp: "",
   });
 
   // Step 5: If credentials are not validated return error
@@ -134,4 +145,57 @@ export async function deleteAccount(req, res) {
   //delete user's information from database and return message for success
   await User.deleteOne({ email: { $eq: email } });
   res.status(200).send({ message: "account deleted successfully" });
+}
+
+/**
+ * Function does the following steps to facilitates Google OAuth login:
+ *
+ * 1. Get the token id from the body.
+ * 2. Verify token id from verify "id_token" function from OAuth by giving the clientId.
+ * 3. Check if reponse payload exist.
+ * 4. Check if user alredy exist in databse if yes then send the jwt token.
+ * 5. If not then from response payload get email name and profilepic of user.
+ * 6. Set and verify user from the mongo and then generate and send the jwt token.
+ */
+export async function loginWithGoogle(req, res) {
+  let { tokenId } = req.body;
+
+  const response = await client.verifyIdToken({
+    idToken: tokenId,
+    audience: client._clientId,
+  });
+
+  const payload = response.getPayload();
+  if (!payload) {
+    res.status(401).send();
+    return;
+  }
+  const user = await User.findOne({ email: { $eq: payload.email } });
+  if (!user) {
+    const newUser = new User({
+      _id: new mongoose.Types.ObjectId(),
+      email: payload.email,
+      password: "",
+      name: payload.name,
+      mobileNumbers: [],
+      deliveryAddresses: [],
+      dp: payload.picture ?? "",
+    });
+    const validationError = newUser.validateSync();
+    if (validationError) {
+      return res.status(404).send({ message: validationError.message });
+    }
+
+    await newUser.save();
+
+    const token = jwt.sign(payload.email, jwtSecretKey);
+    res
+      .status(200)
+      .send({ message: "signedup successfully", token: token, user: newUser });
+  } else {
+    const token = jwt.sign(payload.email, jwtSecretKey);
+    res
+      .status(200)
+      .send({ message: "signedup successfully", token: token, user: user });
+  }
 }

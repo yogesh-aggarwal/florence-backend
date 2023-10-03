@@ -1,7 +1,11 @@
 import Razorpay from "razorpay";
 import { Order } from "../models/orders";
 import { Product } from "../models/product";
-
+import { User } from "../models/user";
+import { ObjectId } from "mongodb";
+import jwt from "jsonwebtoken";
+import { config } from "dotenv";
+config();
 export async function createOrder(req, res) {
   var instance = new Razorpay({
     key_id: "rzp_test_rMU9G0FV33EqNz",
@@ -49,7 +53,6 @@ export async function placeOrder(req, res) {
   const productIds = Object.keys(req.body["cart"]);
 
   let products = await Product.find({ _id: { $in: productIds } });
-
   let productPrices = {};
 
   for (let product of products) {
@@ -79,5 +82,25 @@ export async function placeOrder(req, res) {
 
   await order.save();
 
-  return res.status(200).send({ message: "order placed successfully" });
+  return res
+    .status(200)
+    .send({ message: "order placed successfully", orderId: order.id });
+}
+
+export async function getOrderById(req, res) {
+  const orderId = req.body["id"];
+  let order = await Order.findOne({ id: { $eq: orderId } });
+  res.status(200).send({ order: order });
+}
+
+export async function getOrderByUserId(req, res) {
+  const jwtSecretKey = process.env.JWTSECRETKEY;
+  const token = req.headers["authorization"].replace("Bearer", "").trim();
+  const tokenemail = jwt.verify(token, jwtSecretKey);
+  const user = await User.findOne({ email: tokenemail });
+  const userId = user._id;
+  const orders = await Order.find({ userID: new ObjectId(userId) });
+  res
+    .status(200)
+    .send({ orders: orders, message: "order fetched successfully" });
 }
