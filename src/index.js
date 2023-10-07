@@ -17,6 +17,7 @@ import {
   getOrderByUserId,
   placeOrder,
 } from "./routes/orders";
+import { getHomeData } from "./routes/platform";
 
 config();
 // Configurations
@@ -37,6 +38,7 @@ app.post("/getProductById", getProductById);
 app.post("/getProductByIds", getProductByIds);
 app.post("/getProductsByTitle", getProductsByTitle);
 app.get("/getTrendingProducts", getTrendingProducts);
+app.post("/getHomeData", getHomeData);
 app.post("/getProductsByCategory", getProductsByCategory);
 app.post("/order", createOrder);
 app.post("/orderPlaced", placeOrder);
