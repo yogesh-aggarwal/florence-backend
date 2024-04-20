@@ -45,6 +45,11 @@ const UserSchema = new mongoose.Schema({
     minLength: 4,
     required: true,
   },
+  viewHistory: [
+    {
+      type: String,
+    },
+  ],
   // deliveryAddresses: [Address],
   deliveryAddresses: [{ type: Address }],
   mobileNumbers: [
@@ -59,6 +64,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  wishlist:[{
+    type : String,
+    trim:true,
+  }],
 });
 
 export const User = mongoose.model("users", UserSchema);
