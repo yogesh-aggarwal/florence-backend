@@ -1,7 +1,7 @@
 import Razorpay from "razorpay";
-import { Order } from "../models/orders";
-import { Product } from "../models/product";
-import { User } from "../models/user";
+import { Order } from "../models/orders.js";
+import { Product } from "../models/product.js";
+import { User } from "../models/user.js";
 import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
@@ -52,7 +52,7 @@ export async function placeOrder(req, res) {
   }
   const productIds = Object.keys(req.body["cart"]);
 
-  let products = await Product.find({ _id: { $in: productIds } });
+  let products = await Product.find({ id: { $in: productIds } });
   let productPrices = {};
 
   for (let product of products) {
@@ -96,11 +96,33 @@ export async function getOrderById(req, res) {
 export async function getOrderByUserId(req, res) {
   const jwtSecretKey = process.env.JWTSECRETKEY;
   const token = req.headers["authorization"].replace("Bearer", "").trim();
-  const tokenemail = jwt.verify(token, jwtSecretKey);
-  const user = await User.findOne({ email: tokenemail });
-  const userId = user._id;
-  const orders = await Order.find({ userID: new ObjectId(userId) });
-  res
-    .status(200)
-    .send({ orders: orders, message: "order fetched successfully" });
+
+  if (!token) {
+    return res.status(404).send({ message: "orders not found" });
+  }
+
+  try {
+    const tokenemail = jwt.verify(token, jwtSecretKey);
+
+    if (!tokenemail || typeof tokenemail !== "string") {
+      return res.status(400).send({ message: "Invalid token format" });
+    }
+
+    const user = await User.findOne({ email: tokenemail });
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    const userId = user._id;
+    const orders = await Order.find({ userID: new ObjectId(userId) });
+
+    return res
+      .status(200)
+      .send({ orders: orders, message: "order fetched successfully" });
+  } catch (error) {
+    // Handle JWT verification errors
+    console.error("JWT verification error:", error);
+    return res.status(401).send({ message: "Unauthorized" });
+  }
 }
