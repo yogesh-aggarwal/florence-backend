@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { Product, productSchema } from "../models/product";
+import { Product } from "../models/product.js";
+import { User } from "../models/user.js";
 
 export async function getProducts(_, res) {
   const products = await Product.find({});
@@ -10,7 +10,26 @@ export async function getProducts(_, res) {
 }
 
 export async function getProductById(req, res) {
-  const product = await Product.findOne({ _id: { $eq: req.body["id"] } });
+  const product = await Product.findOne({ id: { $eq: req.body["id"] } });
+  const email = req.body["email"];
+  if (email) {
+    const user = await User.findOne({ email: email });
+    if (user) {
+      const viewHistory = user.viewHistory;
+      const check = viewHistory.includes(req.body["id"]);
+      if (!check) {
+        if (viewHistory.length >= 5) {
+          viewHistory.shift();
+        }
+        viewHistory.push(req.body["id"]);
+
+        await User.updateOne(
+          { email: email },
+          { $set: { viewHistory: viewHistory } }
+        );
+      }
+    }
+  }
   res.status(200).send({
     message: "Product fetched",
     data: product,
@@ -48,18 +67,43 @@ export async function getTrendingProducts(_, res) {
 export async function getProductByIds(req, res) {
   const productIds = req.body["ids"];
 
-  const products = await Product.find({ _id: { $in: productIds } });
+  const products = await Product.find({ id: { $in: productIds } });
   let reqProducts = [];
   for (let product of products) {
     let pro = {};
     pro["title"] = product.title;
     pro["image"] = product.images[0];
-    pro["id"] = product._id;
+    pro["id"] = product.toObject().id;
+
 
     reqProducts.push(pro);
   }
+
   res.status(200).send({
     message: "Products fetched",
     data: reqProducts,
   });
 }
+
+export async function getProductsByIdsWishlist(req, res) {
+  const productIds = req.body["Wishlist"];
+  const products = await Product.find({ id: { $in: productIds } });
+  let reqProducts = [];
+  for (let product of products) {
+    let pro = {};
+    pro["title"] = product.title;
+    pro["images"] = product.images;
+    pro["id"] = product.toObject().id;
+    pro["price"]=product.price
+
+
+    reqProducts.push(pro);
+  }
+
+  res.status(200).send({
+    message: "Products fetched",
+    data: reqProducts,
+  });
+
+}
+
