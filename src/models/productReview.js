@@ -27,6 +27,11 @@ const productReviewSchema = mongoose.Schema({
     required: true,
     trim: true,
   },
+  userName:{
+    type:String,
+    required:true,
+    trim:true,
+  }
 });
 
 export const ProductReview = mongoose.model(

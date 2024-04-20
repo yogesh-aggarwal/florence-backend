@@ -1,8 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-import { generatePasswordHash, validatePassword } from "../core/utils";
-import { User } from "../models/user";
+import { generatePasswordHash, validatePassword } from "../core/utils.js";
+import { User } from "../models/user.js";
 import { config } from "dotenv";
 import { OAuth2Client } from "google-auth-library";
 
@@ -159,6 +159,7 @@ export async function deleteAccount(req, res) {
  */
 export async function loginWithGoogle(req, res) {
   let { tokenId } = req.body;
+
 
   const response = await client.verifyIdToken({
     idToken: tokenId,
