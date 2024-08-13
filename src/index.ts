@@ -1,7 +1,7 @@
 import cors from "cors"
-import { config } from "dotenv"
 import express from "express"
 import mongoose from "mongoose"
+import { MONGO_URI, PORT } from "./core/constants"
 import { deleteAccount, login, loginWithGoogle, signUp } from "./routes/auth"
 import {
 	createOrder,
@@ -21,13 +21,8 @@ import {
 } from "./routes/product"
 import { updateWishlist } from "./routes/user"
 
-config()
-const mongoUrl = process.env.MONGOURL
-
 // Configurations
 const app = express()
-// const port = 4000;
-const port = process.env.PORT
 
 // Parsers
 app.use(express.json())
@@ -56,9 +51,9 @@ app.post("/loginWithGoogle", loginWithGoogle)
 //addSampleProducts
 
 // Setup
-mongoose.connect(mongoUrl).then(async () => {
+mongoose.connect(MONGO_URI).then(async () => {
 	console.log("mongo connected")
-	app.listen(port, () => {
+	app.listen(PORT, () => {
 		console.log("server is started")
 	})
 })
