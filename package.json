@@ -2,10 +2,9 @@
   "name": "e-commerce",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.js",
-  "type": "module",
+  "main": "src/index.ts",
   "scripts": {
-    "start": "nodemon --experimental-specifier-resolution=node .",
+    "start": "nodemon --experimental-specifier-resolution=node . nodemon build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -21,5 +20,8 @@
     "mongoose": "^7.6.11",
     "nodemon": "^2.0.22",
     "razorpay": "^2.9.2"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2"
   }
 }
