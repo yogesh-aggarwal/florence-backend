@@ -94,7 +94,7 @@ export async function getOrderById(req, res) {
 }
 
 export async function getOrderByUserId(req, res) {
-  const jwtSecretKey = process.env.JWTSECRETKEY;
+  const jwtSecretKey = process.env.JWT_SECRET
   const token = req.headers["authorization"].replace("Bearer", "").trim();
 
   if (!token) {

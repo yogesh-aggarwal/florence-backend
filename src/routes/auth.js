@@ -7,7 +7,7 @@ import { config } from "dotenv";
 import { OAuth2Client } from "google-auth-library";
 
 config();
-const jwtSecretKey = process.env.JWTSECRETKEY;
+const jwtSecretKey = process.env.JWT_SECRET
 
 /**
  * 1. Get the body
