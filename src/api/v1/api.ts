@@ -27,7 +27,7 @@ v1.use(authMiddleware)
 
 // Authenticated Routers
 v1.use("/order", orderRouter)
-v1.use("platform", platformRouter)
+v1.use("/platform", platformRouter)
 v1.use("/product", productRouter)
 v1.use("/user", userRouter)
 

@@ -15,6 +15,10 @@ const app = express()
 	app.use(express.json())
 	app.use(cors({ origin: ALLOWED_ORIGINS }))
 
+	app.get("/", (_, res) => {
+		res.redirect("/v1")
+	})
+
 	// Health check
 	app.get("/health", (_, res) => res.status(200).send("OK"))
 
@@ -31,7 +35,7 @@ async function main() {
 
 	console.log("✅ Mongo connected")
 	app.listen(PORT, () => {
-		console.log(`✅ Server started at http://localhost:${PORT}`)
+		console.log(`\n🚀 Server started at:\n   http://localhost:${PORT}`)
 	})
 }
 
