@@ -1,9 +1,9 @@
 import { Router } from "express"
 
-import { Product } from "../../models/product"
-import { Product_t } from "../../models/product.types"
-import { User } from "../../models/user"
-import { User_t } from "../../models/user.types"
+import { Product } from "../models/product"
+import { Product_t } from "../models/product.types"
+import { User } from "../models/user"
+import { User_t } from "../models/user.types"
 
 export const productRouter = Router()
 

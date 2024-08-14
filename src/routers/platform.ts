@@ -1,11 +1,11 @@
 import { Request, Response, Router } from "express"
 
-import { ResponseMessages } from "../../core/messages"
-import { Platform } from "../../models/platform"
-import { PlatformHomeSection_t } from "../../models/platform.types"
-import { Product } from "../../models/product"
-import { Product_t } from "../../models/product.types"
-import { User } from "../../models/user"
+import { ResponseMessages } from "../core/messages"
+import { Platform } from "../models/platform"
+import { PlatformHomeSection_t } from "../models/platform.types"
+import { Product } from "../models/product"
+import { Product_t } from "../models/product.types"
+import { User } from "../models/user"
 
 export const platformRouter = Router()
 

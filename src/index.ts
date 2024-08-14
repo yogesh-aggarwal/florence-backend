@@ -1,29 +1,54 @@
 import cors from "cors"
-import express from "express"
+import express, { Router } from "express"
 import mongoose from "mongoose"
 
 import { ALLOWED_ORIGINS, MONGO_URI, PORT } from "./core/constants"
-import { rootRouter } from "./routers/root"
+import authMiddleware from "./middlewares/auth"
+import { authRouter } from "./routers/auth"
+import { orderRouter } from "./routers/orders"
+import { platformRouter } from "./routers/platform"
+import { productRouter } from "./routers/product"
+import { userRouter } from "./routers/user"
+
+// ----------------------------------------------------------------------------
+// Authenticated routes
+// ----------------------------------------------------------------------------
+
+const authenticatedRouter = Router()
+{
+	// Middlewares
+	authenticatedRouter.use(authMiddleware)
+
+	// Routers
+	authenticatedRouter.use("/order", orderRouter)
+	authenticatedRouter.use("platform", platformRouter)
+	authenticatedRouter.use("/product", productRouter)
+	authenticatedRouter.use("/user", userRouter)
+}
+
+// ----------------------------------------------------------------------------
+// Main router
+// ----------------------------------------------------------------------------
 
 const app = express()
-
-// Configurations
 {
+	// Middlewares
 	app.use(express.json())
 	app.use(cors({ origin: ALLOWED_ORIGINS }))
-}
 
-// Routers
-{
-	app.use("/", rootRouter)
-}
+	// Routers
+	app.use("/auth", authRouter)
+	app.use("/", authenticatedRouter)
 
-// Health check
-{
+	// Health check
 	app.get("/health", (req, res) => {
 		res.status(200).send({ message: "OK" })
 	})
 }
+
+// ----------------------------------------------------------------------------
+// Main
+// ----------------------------------------------------------------------------
 
 async function main() {
 	await mongoose.connect(MONGO_URI)
@@ -33,5 +58,7 @@ async function main() {
 		console.log("✅ Server started")
 	})
 }
+
+// ----------------------------------------------------------------------------
 
 main()
