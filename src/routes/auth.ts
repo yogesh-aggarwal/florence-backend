@@ -2,7 +2,7 @@ import bcrypt from "bcrypt"
 import { Request, Response } from "express"
 import { OAuth2Client } from "google-auth-library"
 import jwt from "jsonwebtoken"
-import mongoose, { Document, Error } from "mongoose"
+import mongoose, { Document } from "mongoose"
 import { GCP_OAUTH_CLIENT_ID, JWT_SECRET } from "../core/constants"
 import { ResponseMessages } from "../core/messages"
 import { generatePasswordHash, validatePassword } from "../core/utils"
@@ -30,16 +30,14 @@ export async function login(req: Request, res: Response): Promise<void> {
 	// Step 1: Extract information from body & validate them
 	let { email, password } = req.body
 	if (!email || !password) {
-		res
-			.status(401)
-			.send({ message: ResponseMessages.AUTH_INVALID_BODY_CONTENT })
+		res.status(401).send({ message: ResponseMessages.INVALID_BODY_CONTENT })
 		return
 	}
 
 	// Step 2: Check if user already exists, if not then raise error
 	const user: Document | null = await User.findOne({ email: { $eq: email } })
 	if (!user) {
-		res.status(401).send({ message: ResponseMessages.AUTH_INVALID_REQUEST })
+		res.status(401).send({ message: ResponseMessages.INVALID_REQUEST })
 		return
 	}
 
@@ -99,8 +97,7 @@ export async function signUp(req: Request, res: Response): Promise<void> {
 	})
 
 	// Step 5: If credentials are not validated, return error
-	const validationError: Error.ValidationError | undefined =
-		newUser.validateSync()
+	const validationError = newUser.validateSync()
 	if (validationError) {
 		res.status(404).send({ message: validationError.message })
 		return
@@ -124,23 +121,27 @@ export async function deleteAccount(
 	// If the provided email is not available in the database, return error
 	const user: Document | null = await User.findOne({ email: { $eq: email } })
 	if (!user) {
-		res.status(401).send({ message: "invalid request" })
+		res.status(401).send({ message: ResponseMessages.INVALID_REQUEST })
 		return
 	}
 
 	// Generate a token and verify it with the existing token
-	const token: string = req.headers["authorization"].replace("Bearer ", "")
+	const token = req.headers["authorization"]?.replace("Bearer ", "")
+	if (!token) {
+		res.status(401).send({ message: ResponseMessages.INVALID_REQUEST })
+		return
+	}
 	const tokenemail: string = jwt.verify(token, JWT_SECRET) as string
 
 	// If the token user name (extracted above) is not equal to the provided email, return error
 	if (email != tokenemail) {
-		res.status(401).send({ message: "invalid request" })
+		res.status(401).send({ message: ResponseMessages.INVALID_REQUEST })
 		return
 	}
 
 	// Delete user's information from the database and return a success message
 	await User.deleteOne({ email: { $eq: email } })
-	res.status(200).send({ message: "account deleted successfully" })
+	res.status(200).send({ message: ResponseMessages.SUCCESS })
 }
 
 /**
@@ -182,8 +183,7 @@ export async function loginWithGoogle(
 			deliveryAddresses: [],
 			dp: payload.picture ?? "",
 		})
-		const validationError: Error.ValidationError | undefined =
-			newUser.validateSync()
+		const validationError = newUser.validateSync()
 		if (validationError) {
 			res.status(404).send({ message: validationError.message })
 			return
