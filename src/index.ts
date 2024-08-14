@@ -15,6 +15,9 @@ const app = express()
 	app.use(express.json())
 	app.use(cors({ origin: ALLOWED_ORIGINS }))
 
+	// Health check
+	app.get("/health", (_, res) => res.status(200).send("OK"))
+
 	// Routers
 	app.use("/v1", v1)
 }
