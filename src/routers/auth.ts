@@ -53,7 +53,7 @@ authRouter.post("login", async (req: Request, res: Response) => {
 	res.status(200).send({ token: token, user: user })
 })
 
-authRouter.post("/signUp", async (req: Request, res: Response) => {
+authRouter.post("/signup", async (req: Request, res: Response) => {
 	// Step 1: Retrieving the information of user
 	let { email, password, name } = req.body
 
