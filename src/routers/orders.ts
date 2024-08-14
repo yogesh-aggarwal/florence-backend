@@ -1,4 +1,4 @@
-import { Request, Response } from "express"
+import { Request, Response, Router } from "express"
 import jwt from "jsonwebtoken"
 import { ObjectId } from "mongodb"
 import Razorpay from "razorpay"
@@ -7,7 +7,54 @@ import { Order } from "../models/orders"
 import { Product } from "../models/product"
 import { User } from "../models/user"
 
-export async function createOrder(req: Request, res: Response): Promise<void> {
+export const orderRouter = Router()
+
+orderRouter.get("/:id", async (req: Request, res: Response) => {
+	const id = req.params.id
+	let order = await Order.findOne({ id: { $eq: id } })
+	res.status(200).send({ order: order })
+})
+
+orderRouter.get("/all", async (req: Request, res: Response) => {
+	// TODO:
+	const token = req.headers["authorization"]!.replace("Bearer", "").trim()
+
+	if (!token) {
+		res.status(404).send({ message: "orders not found" })
+		return
+	}
+
+	try {
+		const tokenemail = jwt.verify(token, JWT_SECRET)
+
+		if (!tokenemail || typeof tokenemail !== "string") {
+			res.status(400).send({ message: "Invalid token format" })
+			return
+		}
+
+		const user = await User.findOne({ email: tokenemail })
+
+		if (!user) {
+			res.status(404).send({ message: "User not found" })
+			return
+		}
+
+		const userId = user._id.toString()
+		const orders = await Order.find({ userID: new ObjectId(userId) })
+
+		res
+			.status(200)
+			.send({ orders: orders, message: "order fetched successfully" })
+		return
+	} catch (error) {
+		// Handle JWT verification errors
+		console.error("JWT verification error:", error)
+		res.status(401).send({ message: "Unauthorized" })
+		return
+	}
+})
+
+orderRouter.post("/create", async (req: Request, res: Response) => {
 	var instance = new Razorpay({
 		key_id: RAZORPAY_KEY_ID,
 		key_secret: RAZORPAY_SECRET,
@@ -23,9 +70,9 @@ export async function createOrder(req: Request, res: Response): Promise<void> {
 		message: "order created successfully",
 		order: order,
 	})
-}
+})
 
-export async function placeOrder(req: Request, res: Response): Promise<void> {
+orderRouter.post("/place", async (req: Request, res: Response) => {
 	let razorpay_order_id = await Order.findOne({
 		id: { $eq: req.body["razorpay_order_id"] },
 	})
@@ -86,51 +133,4 @@ export async function placeOrder(req: Request, res: Response): Promise<void> {
 	res
 		.status(200)
 		.send({ message: "order placed successfully", orderId: order.id })
-}
-
-export async function getOrderById(req: Request, res: Response): Promise<void> {
-	const orderId = req.body["id"]
-	let order = await Order.findOne({ id: { $eq: orderId } })
-	res.status(200).send({ order: order })
-}
-
-export async function getOrderByUserId(
-	req: Request,
-	res: Response
-): Promise<void> {
-	const token = req.headers["authorization"].replace("Bearer", "").trim()
-
-	if (!token) {
-		res.status(404).send({ message: "orders not found" })
-		return
-	}
-
-	try {
-		const tokenemail = jwt.verify(token, JWT_SECRET)
-
-		if (!tokenemail || typeof tokenemail !== "string") {
-			res.status(400).send({ message: "Invalid token format" })
-			return
-		}
-
-		const user = await User.findOne({ email: tokenemail })
-
-		if (!user) {
-			res.status(404).send({ message: "User not found" })
-			return
-		}
-
-		const userId = user._id.toString()
-		const orders = await Order.find({ userID: new ObjectId(userId) })
-
-		res
-			.status(200)
-			.send({ orders: orders, message: "order fetched successfully" })
-		return
-	} catch (error) {
-		// Handle JWT verification errors
-		console.error("JWT verification error:", error)
-		res.status(401).send({ message: "Unauthorized" })
-		return
-	}
-}
+})

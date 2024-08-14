@@ -1,18 +1,22 @@
-import { Request, Response } from "express"
+import { Request, Response, Router } from "express"
+import { ResponseMessages } from "../core/messages"
 import { Platform } from "../models/platform"
 import { PlatformHomeSection_t } from "../models/platform.types"
 import { Product } from "../models/product"
 import { Product_t } from "../models/product.types"
 import { User } from "../models/user"
 
-export async function getHomeData(req: Request, res: Response) {
+export const platformRouter = Router()
+
+platformRouter.post("/home", async (req: Request, res: Response) => {
 	try {
 		const data: PlatformHomeSection_t | null = await Platform.findOne({
 			id: "home",
 		})
 		if (!data) {
-			res.status(404).send({ error: "Home data not found" })
-			return
+			return res
+				.status(500)
+				.send({ error: ResponseMessages.INTERNAL_SERVER_ERROR })
 		}
 
 		let response: Record<string, Record<string, Product_t[]>> = {}
@@ -35,9 +39,7 @@ export async function getHomeData(req: Request, res: Response) {
 		}
 
 		let email = req.body["email"]
-		if (!email) {
-			return res.status(200).send({ response })
-		}
+		if (!email) return res.status(200).send({ response })
 
 		const user = await User.findOne({ email: email })
 
@@ -54,22 +56,21 @@ export async function getHomeData(req: Request, res: Response) {
 		})
 
 		if (fetchRes.status != 200) {
-			// Handle non-2xx response
-			throw new Error(
-				`Failed to fetch recommended products: ${fetchRes["message"]}`
-			)
+			return res
+				.status(500)
+				.send({ error: ResponseMessages.INTERNAL_SERVER_ERROR })
 		}
 
 		let ans = await fetchRes.json()
 		let recommended_product_ids = ans["data"]
-		const recommended_products = await Product.find({
+		const recommended_products: Product_t[] = await Product.find({
 			id: { $in: recommended_product_ids },
 		})
-		response["recommendedProducts"] = recommended_products
-		response["user"] = user
+		// response["recommendedProducts"] = recommended_products
+		// response["user"] = user
 		return res.status(200).send({ response })
 	} catch (error) {
 		console.error("Error in getHomeData:", error)
 		return res.status(500).send({ error: "Internal server error" })
 	}
-}
+})

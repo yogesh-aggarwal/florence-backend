@@ -1,12 +1,18 @@
 import bcrypt from "bcrypt"
-import { Request, Response } from "express"
+import { Request, Response, Router } from "express"
 import { OAuth2Client } from "google-auth-library"
 import jwt from "jsonwebtoken"
 import mongoose, { Document } from "mongoose"
+
 import { GCP_OAUTH_CLIENT_ID, JWT_SECRET } from "../core/constants"
 import { ResponseMessages } from "../core/messages"
 import { generatePasswordHash, validatePassword } from "../core/utils"
 import { User } from "../models/user"
+import { User_t } from "../models/user.types"
+
+export const authRouter = Router()
+
+const client = new OAuth2Client(GCP_OAUTH_CLIENT_ID)
 
 /**
  * 1. Get the body
@@ -20,13 +26,7 @@ import { User } from "../models/user"
  * 6. Encrypt the retrieved user data in a JWT token
  * 7. Return the generated JWT token
  */
-
-/**
- * created for the open authentication google
- */
-const client = new OAuth2Client(GCP_OAUTH_CLIENT_ID)
-
-export async function login(req: Request, res: Response): Promise<void> {
+authRouter.post("login", async (req: Request, res: Response) => {
 	// Step 1: Extract information from body & validate them
 	let { email, password } = req.body
 	if (!email || !password) {
@@ -35,7 +35,7 @@ export async function login(req: Request, res: Response): Promise<void> {
 	}
 
 	// Step 2: Check if user already exists, if not then raise error
-	const user: Document | null = await User.findOne({ email: { $eq: email } })
+	const user: User_t | null = await User.findOne({ email: { $eq: email } })
 	if (!user) {
 		res.status(401).send({ message: ResponseMessages.INVALID_REQUEST })
 		return
@@ -51,9 +51,9 @@ export async function login(req: Request, res: Response): Promise<void> {
 	// Step 4: Generate token
 	const token: string = jwt.sign(email, JWT_SECRET)
 	res.status(200).send({ token: token, user: user })
-}
+})
 
-export async function signUp(req: Request, res: Response): Promise<void> {
+authRouter.post("/signUp", async (req: Request, res: Response) => {
 	// Step 1: Retrieving the information of user
 	let { email, password, name } = req.body
 
@@ -109,40 +109,7 @@ export async function signUp(req: Request, res: Response): Promise<void> {
 	res
 		.status(200)
 		.send({ message: "signed up successfully", token: token, user: newUser })
-}
-
-export async function deleteAccount(
-	req: Request,
-	res: Response
-): Promise<void> {
-	// Retrieving the data
-	const { email } = req.body
-
-	// If the provided email is not available in the database, return error
-	const user: Document | null = await User.findOne({ email: { $eq: email } })
-	if (!user) {
-		res.status(401).send({ message: ResponseMessages.INVALID_REQUEST })
-		return
-	}
-
-	// Generate a token and verify it with the existing token
-	const token = req.headers["authorization"]?.replace("Bearer ", "")
-	if (!token) {
-		res.status(401).send({ message: ResponseMessages.INVALID_REQUEST })
-		return
-	}
-	const tokenemail: string = jwt.verify(token, JWT_SECRET) as string
-
-	// If the token user name (extracted above) is not equal to the provided email, return error
-	if (email != tokenemail) {
-		res.status(401).send({ message: ResponseMessages.INVALID_REQUEST })
-		return
-	}
-
-	// Delete user's information from the database and return a success message
-	await User.deleteOne({ email: { $eq: email } })
-	res.status(200).send({ message: ResponseMessages.SUCCESS })
-}
+})
 
 /**
  * Function does the following steps to facilitate Google OAuth login:
@@ -154,10 +121,7 @@ export async function deleteAccount(
  * 5. If not, then from the response payload get email, name, and profile pic of the user.
  * 6. Set and verify user from the mongo and then generate and send the jwt token.
  */
-export async function loginWithGoogle(
-	req: Request,
-	res: Response
-): Promise<void> {
+authRouter.post("/loginWithGoogle", async (req: Request, res: Response) => {
 	let { tokenId } = req.body
 
 	const response = await client.verifyIdToken({
@@ -191,14 +155,14 @@ export async function loginWithGoogle(
 
 		await newUser.save()
 
-		const token: string = jwt.sign(payload.email, JWT_SECRET)
+		const token: string = jwt.sign(payload.email!, JWT_SECRET)
 		res
 			.status(200)
 			.send({ message: "signed up successfully", token: token, user: newUser })
 	} else {
-		const token: string = jwt.sign(payload.email, JWT_SECRET)
+		const token: string = jwt.sign(payload.email!, JWT_SECRET)
 		res
 			.status(200)
 			.send({ message: "signed up successfully", token: token, user: user })
 	}
-}
+})

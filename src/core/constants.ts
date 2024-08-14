@@ -2,6 +2,12 @@ import { config } from "dotenv"
 
 config()
 
+export const ALLOWED_ORIGINS: string[] = [process.env.ALLOWED_ORIGIN || ""]
+if (!ALLOWED_ORIGINS[0]) {
+	console.error("Missing ALLOWED_ORIGIN")
+	process.exit(1)
+}
+
 export const MONGO_URI: string = process.env.MONGO_URI || ""
 if (!MONGO_URI) {
 	console.error("Missing MONGO_URI")
