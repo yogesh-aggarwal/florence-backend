@@ -3,24 +3,27 @@ import express from "express"
 import mongoose from "mongoose"
 
 import { ALLOWED_ORIGINS, MONGO_URI, PORT } from "./core/constants"
-import { authRouter } from "./routers/auth"
-import { orderRouter } from "./routers/orders"
-import { platformRouter } from "./routers/platform"
-import { productRouter } from "./routers/product"
-import { userRouter } from "./routers/user"
+import { rootRouter } from "./routers/root"
 
 const app = express()
 
 // Configurations
-app.use(express.json())
-app.use(cors({ origin: ALLOWED_ORIGINS }))
+{
+	app.use(express.json())
+	app.use(cors({ origin: ALLOWED_ORIGINS }))
+}
 
 // Routers
-app.use("/auth", authRouter)
-app.use("/order", orderRouter)
-app.use("platform", platformRouter)
-app.use("/product", productRouter)
-app.use("/user", userRouter)
+{
+	app.use("/", rootRouter)
+}
+
+// Health check
+{
+	app.get("/health", (req, res) => {
+		res.status(200).send({ message: "OK" })
+	})
+}
 
 async function main() {
 	await mongoose.connect(MONGO_URI)
