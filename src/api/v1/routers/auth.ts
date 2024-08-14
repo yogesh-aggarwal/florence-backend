@@ -26,7 +26,7 @@ const client = new OAuth2Client(GCP_OAUTH_CLIENT_ID)
  * 6. Encrypt the retrieved user data in a JWT token
  * 7. Return the generated JWT token
  */
-authRouter.post("login", async (req: Request, res: Response) => {
+authRouter.post("/login", async (req: Request, res: Response) => {
 	// Step 1: Extract information from body & validate them
 	let { email, password } = req.body
 	if (!email || !password) {
