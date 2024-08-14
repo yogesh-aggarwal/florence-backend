@@ -6,5 +6,5 @@
    "ignore": [
       "dist"
    ],
-   "exec": "ts-node --esm --experimental-specifier-resolution=node"
+   "exec": "tsx ."
 }

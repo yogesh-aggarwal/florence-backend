@@ -1,14 +1,13 @@
 {
 	"compilerOptions": {
-		"target": "ES6", // Targeting ES6
-		"module": "ES6", // Using ES6 modules
 		"strict": true, // Enable all strict type-checking options
+		"module": "ESNext", // Using ES6 modules
+		"moduleResolution": "Node", // Use Node.js resolution strategy
 		"esModuleInterop": true, // Enable interoperability between CommonJS and ES modules
 		"skipLibCheck": true, // Skip type checking of declaration files
 		"forceConsistentCasingInFileNames": true, // Ensure consistent casing in imports
 		"outDir": "./dist", // Output directory for compiled files
-		"rootDir": "./src", // Root directory of the source files,
-		"moduleResolution": "Node" // Use Node.js resolution strategy
+		"rootDir": "./src" // Root directory of the source files,
 	},
 	"include": ["src/**/*"],
 	"exclude": ["node_modules", "**/*.spec.ts"]
