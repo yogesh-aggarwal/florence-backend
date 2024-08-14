@@ -1,11 +1,7 @@
 import mongoose from "mongoose"
+import { Product_t } from "./product.types"
 
 // --------------------------------------------------------------------------------------
-
-export type ProductDescriptionItem_t = {
-	type: "para" | "list"
-	content: any
-}
 
 const productDescriptionItemSchema = new mongoose.Schema({
 	type: {
@@ -26,14 +22,6 @@ const productDescriptionItemSchema = new mongoose.Schema({
 })
 
 // --------------------------------------------------------------------------------------
-
-export type ProductReview_t = {
-	id: string
-	userID: string
-	starsGiven: number
-	review: string
-	whenReviewed: string
-}
 
 const productReviewSchema = new mongoose.Schema({
 	id: {
@@ -60,21 +48,6 @@ const productReviewSchema = new mongoose.Schema({
 })
 
 // --------------------------------------------------------------------------------------
-
-export type Product_t = {
-	_id: mongoose.Types.ObjectId
-	title: string
-	price: number
-	images: string[]
-	description: ProductDescriptionItem_t[]
-	deliveryInfo: ProductDescriptionItem_t[]
-	careInstructions: ProductDescriptionItem_t[]
-	discountInPercent: number
-	stock: number
-	deliveryCharges: number
-	starRatings: number
-	reviews: ProductReview_t[]
-}
 
 export const productSchema = new mongoose.Schema({
 	_id: {

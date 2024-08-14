@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import { Order_t } from "./orders.types"
 
 const OrderTimestampSchema = new mongoose.Schema({
 	placed: Number,
@@ -9,8 +10,8 @@ const OrderTimestampSchema = new mongoose.Schema({
 const OrderSchema = new mongoose.Schema({
 	id: String,
 	userID: String,
-	razorpay_payment_id: String,
-	razorpay_signature: String,
+	razorpayTransactionID: String,
+	razorpaySignature: String,
 	orderItems: Object,
 	timestamps: OrderTimestampSchema,
 	currentStatus: {
@@ -20,4 +21,4 @@ const OrderSchema = new mongoose.Schema({
 	priceItems: Object,
 })
 
-export const Order = mongoose.model("Order", OrderSchema)
+export const Order = mongoose.model<Order_t>("Order", OrderSchema)

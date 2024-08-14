@@ -1,5 +1,10 @@
 {
-   "execMap": {
-      "ts": "ts-node"
-   }
+   "watch": [
+      "src"
+   ],
+   "ext": "ts",
+   "ignore": [
+      "dist"
+   ],
+   "exec": "ts-node --esm --experimental-specifier-resolution=node"
 }

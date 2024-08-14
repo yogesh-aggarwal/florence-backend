@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import { ProductReview_t } from "./productReview.types"
 
 const productReviewSchema = new mongoose.Schema({
 	id: {
@@ -34,7 +35,7 @@ const productReviewSchema = new mongoose.Schema({
 	},
 })
 
-export const ProductReview = mongoose.model(
+export const ProductReview = mongoose.model<ProductReview_t>(
 	"productReviews",
 	productReviewSchema
 )

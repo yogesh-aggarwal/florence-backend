@@ -4,6 +4,7 @@ import { OAuth2Client } from "google-auth-library"
 import jwt from "jsonwebtoken"
 import mongoose, { Document, Error } from "mongoose"
 import { GCP_OAUTH_CLIENT_ID, JWT_SECRET } from "../core/constants"
+import { ResponseMessages } from "../core/messages"
 import { generatePasswordHash, validatePassword } from "../core/utils"
 import { User } from "../models/user"
 
@@ -29,21 +30,23 @@ export async function login(req: Request, res: Response): Promise<void> {
 	// Step 1: Extract information from body & validate them
 	let { email, password } = req.body
 	if (!email || !password) {
-		res.status(401).send({ message: "please enter the required fields" })
+		res
+			.status(401)
+			.send({ message: ResponseMessages.AUTH_INVALID_BODY_CONTENT })
 		return
 	}
 
 	// Step 2: Check if user already exists, if not then raise error
 	const user: Document | null = await User.findOne({ email: { $eq: email } })
 	if (!user) {
-		res.status(401).send({ message: "invalid request" })
+		res.status(401).send({ message: ResponseMessages.AUTH_INVALID_REQUEST })
 		return
 	}
 
 	// Step 3: Check for correctness of password
 	const isMatched: boolean = await bcrypt.compare(password, user["password"])
 	if (!isMatched) {
-		res.status(401).send({ message: "the password is incorrect" })
+		res.status(401).send({ message: ResponseMessages.AUTH_PASSWORD_INVALID })
 		return
 	}
 

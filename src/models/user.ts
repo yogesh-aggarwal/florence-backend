@@ -1,6 +1,7 @@
 import mongoose from "mongoose"
+import { User_t, UserAddress_t } from "./user.types"
 
-const Address = new mongoose.Schema({
+const Address = new mongoose.Schema<UserAddress_t>({
 	address: {
 		type: String,
 		trim: true,
@@ -72,4 +73,4 @@ const UserSchema = new mongoose.Schema({
 	],
 })
 
-export const User = mongoose.model("users", UserSchema)
+export const User = mongoose.model<User_t>("users", UserSchema)
