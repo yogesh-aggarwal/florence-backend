@@ -2,8 +2,8 @@ import cors from "cors"
 import express from "express"
 import mongoose from "mongoose"
 
+import { v1 } from "./api/v1/api"
 import { ALLOWED_ORIGINS, MONGO_URI, PORT } from "./core/constants"
-import { authenticatedRouter } from "./routers/routes"
 
 // ----------------------------------------------------------------------------
 // Router
@@ -15,13 +15,8 @@ const app = express()
 	app.use(express.json())
 	app.use(cors({ origin: ALLOWED_ORIGINS }))
 
-	// Health check
-	app.get("/health", (_, res) => {
-		res.status(200).send({ message: "OK" })
-	})
-
 	// Routers
-	app.use("/", authenticatedRouter)
+	app.use("/v1", v1)
 }
 
 // ----------------------------------------------------------------------------

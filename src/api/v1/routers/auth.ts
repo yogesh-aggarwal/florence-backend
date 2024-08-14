@@ -4,9 +4,9 @@ import { OAuth2Client } from "google-auth-library"
 import jwt from "jsonwebtoken"
 import mongoose, { Document } from "mongoose"
 
-import { GCP_OAUTH_CLIENT_ID, JWT_SECRET } from "../core/constants"
-import { ResponseMessages } from "../core/messages"
-import { generatePasswordHash, validatePassword } from "../core/utils"
+import { GCP_OAUTH_CLIENT_ID, JWT_SECRET } from "../../../core/constants"
+import { ResponseMessages } from "../../../core/messages"
+import { generatePasswordHash, validatePassword } from "../../../core/utils"
 import { User } from "../models/user"
 import { User_t } from "../models/user.types"
 

@@ -2,7 +2,12 @@ import { Request, Response, Router } from "express"
 import jwt from "jsonwebtoken"
 import { ObjectId } from "mongodb"
 import Razorpay from "razorpay"
-import { JWT_SECRET, RAZORPAY_KEY_ID, RAZORPAY_SECRET } from "../core/constants"
+
+import {
+	JWT_SECRET,
+	RAZORPAY_KEY_ID,
+	RAZORPAY_SECRET,
+} from "../../../core/constants"
 import { Order } from "../models/orders"
 import { Product } from "../models/product"
 import { User } from "../models/user"
