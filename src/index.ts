@@ -1,33 +1,12 @@
 import cors from "cors"
-import express, { Router } from "express"
+import express from "express"
 import mongoose from "mongoose"
 
 import { ALLOWED_ORIGINS, MONGO_URI, PORT } from "./core/constants"
-import authMiddleware from "./middlewares/auth"
-import { authRouter } from "./routers/auth"
-import { orderRouter } from "./routers/orders"
-import { platformRouter } from "./routers/platform"
-import { productRouter } from "./routers/product"
-import { userRouter } from "./routers/user"
+import { authenticatedRouter } from "./routers/routes"
 
 // ----------------------------------------------------------------------------
-// Authenticated routes
-// ----------------------------------------------------------------------------
-
-const authenticatedRouter = Router()
-{
-	// Middlewares
-	authenticatedRouter.use(authMiddleware)
-
-	// Routers
-	authenticatedRouter.use("/order", orderRouter)
-	authenticatedRouter.use("platform", platformRouter)
-	authenticatedRouter.use("/product", productRouter)
-	authenticatedRouter.use("/user", userRouter)
-}
-
-// ----------------------------------------------------------------------------
-// Main router
+// Router
 // ----------------------------------------------------------------------------
 
 const app = express()
@@ -36,14 +15,13 @@ const app = express()
 	app.use(express.json())
 	app.use(cors({ origin: ALLOWED_ORIGINS }))
 
-	// Routers
-	app.use("/auth", authRouter)
-	app.use("/", authenticatedRouter)
-
 	// Health check
-	app.get("/health", (req, res) => {
+	app.get("/health", (_, res) => {
 		res.status(200).send({ message: "OK" })
 	})
+
+	// Routers
+	app.use("/", authenticatedRouter)
 }
 
 // ----------------------------------------------------------------------------
@@ -55,7 +33,7 @@ async function main() {
 
 	console.log("✅ Mongo connected")
 	app.listen(PORT, () => {
-		console.log("✅ Server started")
+		console.log(`✅ Server started at http://localhost:${PORT}`)
 	})
 }
 

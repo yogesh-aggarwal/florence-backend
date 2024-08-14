@@ -11,7 +11,7 @@ export default async function authMiddleware(
 ) {
 	const token = req.headers["authorization"]?.replace("Bearer ", "")?.trim()
 	if (!token) {
-		return res.status(404).send({ message: ResponseMessages.AUTH_INVALID })
+		return res.status(400).send({ message: ResponseMessages.AUTH_INVALID })
 	}
 
 	try {
