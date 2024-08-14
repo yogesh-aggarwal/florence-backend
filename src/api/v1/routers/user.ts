@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express"
 import jwt from "jsonwebtoken"
 
 import { JWT_SECRET } from "../../../core/constants"
-import { ResponseMessages } from "../../../core/messages"
+import { ResponseMessages } from "../core/messages"
 import { User } from "../models/user"
 
 export const userRouter = Router()

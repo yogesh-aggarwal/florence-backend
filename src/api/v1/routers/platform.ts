@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express"
 
-import { ResponseMessages } from "../../../core/messages"
+import { ResponseMessages } from "../core/messages"
 import { Platform } from "../models/platform"
 import { PlatformHomeSection_t } from "../models/platform.types"
 import { Product } from "../models/product"

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express"
 import jwt from "jsonwebtoken"
 
 import { JWT_SECRET } from "../../../core/constants"
-import { ResponseMessages } from "../../../core/messages"
+import { ResponseMessages } from "../core/messages"
 import { User } from "../models/user"
 
 export default async function authMiddleware(
