@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express"
+import { Router } from "express"
 import jwt from "jsonwebtoken"
 
 import { JWT_SECRET } from "../../../core/constants"
@@ -7,7 +7,7 @@ import { User } from "../models/user"
 
 export const userRouter = Router()
 
-userRouter.patch("/updateProfile", async (req: Request, res: Response) => {
+userRouter.patch("/updateProfile", async (req, res) => {
 	await User.updateOne(
 		{ email: req.body["email"] },
 		{ $set: { wishlist: req.body["wishlist"] } }
@@ -15,7 +15,7 @@ userRouter.patch("/updateProfile", async (req: Request, res: Response) => {
 	res.status(200).send({ message: ResponseMessages.SUCCESS })
 })
 
-userRouter.delete("/deleteAccount", async (req: Request, res: Response) => {
+userRouter.delete("/deleteAccount", async (req, res) => {
 	// Retrieving the data
 	const { email } = req.body
 

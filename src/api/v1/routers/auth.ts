@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt"
-import { Request, Response, Router } from "express"
+import { Router } from "express"
 import { OAuth2Client } from "google-auth-library"
 import jwt from "jsonwebtoken"
 import mongoose, { Document } from "mongoose"
@@ -26,7 +26,7 @@ const client = new OAuth2Client(GCP_OAUTH_CLIENT_ID)
  * 6. Encrypt the retrieved user data in a JWT token
  * 7. Return the generated JWT token
  */
-authRouter.post("/login", async (req: Request, res: Response) => {
+authRouter.post("/login", async (req, res) => {
 	// Step 1: Extract information from body & validate them
 	let { email, password } = req.body
 	if (!email || !password) {
@@ -53,7 +53,7 @@ authRouter.post("/login", async (req: Request, res: Response) => {
 	res.status(200).send({ token: token, user: user })
 })
 
-authRouter.post("/signup", async (req: Request, res: Response) => {
+authRouter.post("/signup", async (req, res) => {
 	// Step 1: Retrieving the information of user
 	let { email, password, name } = req.body
 
@@ -121,7 +121,7 @@ authRouter.post("/signup", async (req: Request, res: Response) => {
  * 5. If not, then from the response payload get email, name, and profile pic of the user.
  * 6. Set and verify user from the mongo and then generate and send the jwt token.
  */
-authRouter.post("/loginWithGoogle", async (req: Request, res: Response) => {
+authRouter.post("/loginWithGoogle", async (req, res) => {
 	let { tokenId } = req.body
 
 	const response = await client.verifyIdToken({

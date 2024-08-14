@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express"
+import { Router } from "express"
 
 import { ResponseMessages } from "../core/messages"
 import { Platform } from "../models/platform"
@@ -9,7 +9,7 @@ import { User } from "../models/user"
 
 export const platformRouter = Router()
 
-platformRouter.post("/home", async (req: Request, res: Response) => {
+platformRouter.post("/home", async (req, res) => {
 	try {
 		const data: PlatformHomeSection_t | null = await Platform.findOne({
 			id: "home",

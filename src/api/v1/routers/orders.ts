@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express"
+import { Router } from "express"
 import jwt from "jsonwebtoken"
 import { ObjectId } from "mongodb"
 import Razorpay from "razorpay"
@@ -14,13 +14,13 @@ import { User } from "../models/user"
 
 export const orderRouter = Router()
 
-orderRouter.get("/:id", async (req: Request, res: Response) => {
+orderRouter.get("/:id", async (req, res) => {
 	const id = req.params.id
 	let order = await Order.findOne({ id: { $eq: id } })
 	res.status(200).send({ order: order })
 })
 
-orderRouter.get("/all", async (req: Request, res: Response) => {
+orderRouter.get("/all", async (req, res) => {
 	// TODO:
 	const token = req.headers["authorization"]!.replace("Bearer", "").trim()
 
@@ -59,7 +59,7 @@ orderRouter.get("/all", async (req: Request, res: Response) => {
 	}
 })
 
-orderRouter.post("/create", async (req: Request, res: Response) => {
+orderRouter.post("/create", async (req, res) => {
 	var instance = new Razorpay({
 		key_id: RAZORPAY_KEY_ID,
 		key_secret: RAZORPAY_SECRET,
@@ -77,7 +77,7 @@ orderRouter.post("/create", async (req: Request, res: Response) => {
 	})
 })
 
-orderRouter.post("/place", async (req: Request, res: Response) => {
+orderRouter.post("/place", async (req, res) => {
 	let razorpay_order_id = await Order.findOne({
 		id: { $eq: req.body["razorpay_order_id"] },
 	})
