@@ -6,5 +6,5 @@
    "ignore": [
       "dist"
    ],
-   "exec": "tsx ."
+   "exec": "clear && tsx ."
 }
