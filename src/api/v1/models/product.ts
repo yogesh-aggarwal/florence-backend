@@ -1,91 +1,44 @@
-import mongoose from "mongoose"
+import { model, Schema, Types } from "mongoose"
 import { Product_t } from "./product.types"
 
 // --------------------------------------------------------------------------------------
 
-const productDescriptionItemSchema = new mongoose.Schema({
-	type: {
-		type: String,
-		/**
-		 * This type field can only take the values in the array
-		 * In case any other value is provided,
-		 * Otherwise, will result in error.
-		 */
-		enum: ["para", "list"],
-		required: true,
-		trim: true,
-	},
-	content: {
-		type: Object,
-		required: true,
-	},
+const ProductDescriptionItemSchema = new Schema({
+	type: { type: String, enum: ["para", "list"], required: true },
+	content: { type: Schema.Types.Mixed, required: true },
+})
+
+const ProductDetailsSchema = new Schema({
+	stock: { type: Number, required: true },
+	description: { type: [ProductDescriptionItemSchema], required: true },
+	deliveryInfo: { type: [ProductDescriptionItemSchema], required: true },
+	careInstructions: { type: [ProductDescriptionItemSchema], required: true },
+})
+
+const ProductStatsSchema = new Schema({
+	views: { type: Number, required: true },
+	starRatings: { type: Number, required: true },
+	reviewsCount: { type: Number, required: true },
+})
+
+const ProductCostingSchema = new Schema({
+	originalPrice: { type: Number, required: true },
+	discountInPercent: { type: Number, required: true },
+	baseDeliveryCharges: { type: Number, required: true },
+})
+
+const ProductSchema = new Schema({
+	_id: { type: Types.ObjectId, required: true },
+	title: { type: String, required: true },
+	price: { type: Number, required: true },
+	images: { type: [String], required: true },
+	details: { type: ProductDetailsSchema, required: true },
+	stats: { type: ProductStatsSchema, required: true },
+	costing: { type: ProductCostingSchema, required: true },
 })
 
 // --------------------------------------------------------------------------------------
 
-const productReviewSchema = new mongoose.Schema({
-	id: {
-		type: String,
-		required: true,
-		trim: true,
-	},
-	userID: {
-		type: String,
-		required: true,
-	},
-	starsGiven: {
-		type: Number,
-		required: true,
-	},
-	review: {
-		type: String,
-		trim: true,
-	},
-	whenReviewed: {
-		type: String,
-		required: true,
-	},
-})
+export const Product = model<Product_t>("product", ProductSchema, "products")
 
 // --------------------------------------------------------------------------------------
-
-export const productSchema = new mongoose.Schema({
-	_id: {
-		type: mongoose.Types.ObjectId,
-		required: true,
-	},
-	title: {
-		trim: true,
-		required: true,
-		type: String,
-	},
-	price: {
-		required: true,
-		type: Number,
-		min: 1,
-	},
-	images: [{ type: String, trim: true }],
-	description: [{ type: productDescriptionItemSchema }],
-	deliveryInfo: [{ type: productDescriptionItemSchema }],
-	careInstructions: [{ type: productDescriptionItemSchema }],
-	discountInPercent: {
-		type: Number,
-		required: true,
-		min: 0,
-	},
-	stock: {
-		required: true,
-		type: Number,
-		min: 0,
-	},
-	deliveryCharges: {
-		required: true,
-		type: Number,
-	},
-	starRatings: { type: Number },
-	reviews: [{ type: productReviewSchema }],
-})
-
-// --------------------------------------------------------------------------------------
-
-export const Product = mongoose.model<Product_t>("products", productSchema)

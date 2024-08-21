@@ -1,6 +1,8 @@
 import mongoose, { Schema } from "mongoose"
 import { Order_t, OrderStatus } from "./orders.types"
 
+// --------------------------------------------------------------------------------------
+
 const OrderPaymentDetailsSchema = new Schema({
 	razorpayPaymentID: { type: String, required: true },
 	razorpaySignature: { type: String, required: true },
@@ -33,8 +35,12 @@ const OrderSchema = new Schema({
 	items: { type: [OrderItemsSchema], required: true },
 })
 
+// --------------------------------------------------------------------------------------
+
 export const OrderModel = mongoose.model<Order_t>(
 	"order",
 	OrderSchema,
 	"orders"
 )
+
+// --------------------------------------------------------------------------------------
