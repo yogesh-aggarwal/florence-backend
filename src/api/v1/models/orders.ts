@@ -42,8 +42,8 @@ const OrderPaymentDetailsQuotationSchema = new Schema({
 		type: [OrderPaymentDetailsQuotationServicesSchema],
 		required: true,
 	},
-	discount: {
-		type: OrderPaymentDetailsQuotationDiscountSchema,
+	discounts: {
+		type: [OrderPaymentDetailsQuotationDiscountSchema],
 		required: true,
 	},
 	taxes: { type: [OrderPaymentDetailsQuotationTaxSchema], required: true },

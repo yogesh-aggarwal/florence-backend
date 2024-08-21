@@ -81,7 +81,7 @@ export const OrderPaymentDetailsQuotation_t = z.object({
 	items: z.number(),
 	delivery: OrderPaymentDetailsQuotationDelivery_t,
 	services: z.array(OrderPaymentDetailsQuotationServices_t),
-	discount: OrderPaymentDetailsQuotationDiscount_t,
+	discounts: z.array(OrderPaymentDetailsQuotationDiscount_t),
 	taxes: z.array(OrderPaymentDetailsQuotationTax_t),
 
 	net: z.number(),
