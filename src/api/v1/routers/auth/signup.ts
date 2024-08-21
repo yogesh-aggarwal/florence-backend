@@ -1,14 +1,12 @@
-import bcrypt from "bcrypt"
 import { Request, Response } from "express"
 import jwt from "jsonwebtoken"
 
-import { Types } from "mongoose"
 import { z } from "zod"
 import { JWT_SECRET } from "../../../../core/constants"
 import { parseRequestBody } from "../../core/helpers"
 import { ResponseMessages } from "../../core/messages"
 import { UserModel } from "../../models/user"
-import { User_t } from "../../models/user.types"
+import { createNewUser } from "../../models/user.helpers"
 
 // --------------------------------------------------------------------------------------
 
@@ -26,57 +24,6 @@ const bodySchema = z.object({
 			"Password must include at least one special character"
 		),
 })
-
-// --------------------------------------------------------------------------------------
-
-/**
- * Encyrpts the password using bcrypt's algorithms
- *
- * @param password Plain text form of password
- * @returns Returns the hash of the password
- */
-async function generatePasswordHash(password: string): Promise<string> {
-	const salt = await bcrypt.genSalt(5)
-	const hash = await bcrypt.hash(password, salt)
-	return hash
-}
-
-// --------------------------------------------------------------------------------------
-
-async function createNewUser(
-	data: z.infer<typeof bodySchema>
-): Promise<User_t> {
-	const encryptedPassword = await generatePasswordHash(data.password)
-
-	const user: User_t = {
-		_id: new Types.ObjectId(),
-		metadata: {
-			createdAt: Date.now(),
-			updatedAt: Date.now(),
-
-			isUpdated: false,
-		},
-
-		// TODO: insert nanoid here
-		dp: `https://picsum.photos/seed/${"nanoid"}/200/200`,
-		name: data.name,
-		email: data.name,
-		password: encryptedPassword,
-
-		data: {
-			wishlist: [],
-			deliveryAddresses: [],
-		},
-	}
-	const validation = User_t.safeParse(user)
-	if (!validation.success) {
-		throw new Error("User is not valid due to some system error")
-	}
-
-	await new UserModel(user).save()
-
-	return user
-}
 
 // --------------------------------------------------------------------------------------
 
@@ -113,7 +60,7 @@ export default async function authSignup(req: Request, res: Response) {
 
 	return res
 		.status(200)
-		.send({ message: "signed up successfully", token: token, user: user })
+		.send({ message: ResponseMessages.SUCCESS, token: token, user: user })
 }
 
 // --------------------------------------------------------------------------------------
