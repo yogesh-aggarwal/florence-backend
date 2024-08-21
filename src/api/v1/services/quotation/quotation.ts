@@ -8,6 +8,8 @@ import { calculateOrderDiscountQuotation } from "./discount"
 import { calculateOrderServicesQuotation } from "./services"
 import { calculateOrderTaxesQuotation } from "./taxes"
 
+// --------------------------------------------------------------------------------------
+
 export async function prepareOrderQuotation(
 	address: UserAddress_t,
 	orderItems: OrderItem_t[],
@@ -28,11 +30,11 @@ export async function prepareOrderQuotation(
 	const servicesTotal = services.reduce((acc, x) => acc + x.amount, 0)
 
 	/* Discounts */
-	const discount = await calculateOrderDiscountQuotation(
+	const discounts = await calculateOrderDiscountQuotation(
 		itemsTotal,
 		appliedCoupon
 	)
-	const discountTotal = discount.amount
+	const discountTotal = discounts.reduce((acc, x) => acc + x.amount, 0)
 
 	/* Taxable amount */
 	const netTaxable = itemsTotal + deliveryTotal + servicesTotal - discountTotal
@@ -50,9 +52,11 @@ export async function prepareOrderQuotation(
 		delivery: delivery,
 		services: services,
 		taxes: taxes,
-		discount: discount,
+		discounts: discounts,
 		net: netAmount,
 	}
 
 	return quotation
 }
+
+// --------------------------------------------------------------------------------------
