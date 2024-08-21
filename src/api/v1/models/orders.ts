@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose"
+import mongoose, { model, Schema } from "mongoose"
 import { Order_t, OrderStatus } from "./orders.types"
 
 // --------------------------------------------------------------------------------------
@@ -37,10 +37,6 @@ const OrderSchema = new Schema({
 
 // --------------------------------------------------------------------------------------
 
-export const OrderModel = mongoose.model<Order_t>(
-	"order",
-	OrderSchema,
-	"orders"
-)
+export const OrderModel = model<Order_t>("order", OrderSchema, "orders")
 
 // --------------------------------------------------------------------------------------

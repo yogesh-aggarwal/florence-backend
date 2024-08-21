@@ -3,6 +3,18 @@ import { z } from "zod"
 
 // --------------------------------------------------------------------------------------
 
+export const OrderMetadata_t = z.object({
+	createdBy: z.string(),
+	createdAt: z.number(),
+
+	editedAt: z.number(),
+	editedBy: z.string(),
+	isEdited: z.boolean(),
+})
+export type OrderMetadata_t = z.infer<typeof OrderMetadata_t>
+
+// --------------------------------------------------------------------------------------
+
 export enum OrderStatus {
 	// Basics
 	Placed = "Placed",
@@ -25,6 +37,7 @@ export enum OrderStatus {
 export const OrderPaymentDetails_t = z.object({
 	razorpayPaymentID: z.string(),
 	razorpaySignature: z.string(),
+	recieptID: z.union([z.string(), z.null()]),
 })
 export type OrderPaymentDetails_t = z.infer<typeof OrderPaymentDetails_t>
 
@@ -56,10 +69,11 @@ export type OrderItems_t = z.infer<typeof OrderItems_t>
 
 export const Order_t = z.object({
 	_id: z.instanceof(ObjectId),
-	userID: z.string(),
-	paymentDetails: OrderPaymentDetails_t,
+	metadata: OrderMetadata_t,
+
 	tracking: OrderTracking_t,
 	items: z.array(OrderItems_t),
+	paymentDetails: OrderPaymentDetails_t,
 })
 export type Order_t = z.infer<typeof Order_t>
 
