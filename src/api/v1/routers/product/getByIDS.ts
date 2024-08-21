@@ -9,7 +9,7 @@ export default async function getProductsByIDS(req: Request, res: Response) {
 
 	// TODO: View counting here? Do we need to increase the view count of the product?
 	const products: Document<Product_t>[] = await ProductModel.find({
-		id: { $in: ids },
+		_id: { $in: ids },
 	})
 	const parsedProducts = products.map((product) => product.toObject())
 

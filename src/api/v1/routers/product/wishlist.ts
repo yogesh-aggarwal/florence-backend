@@ -13,7 +13,7 @@ export default async function getWishlistProducts(req: Request, res: Response) {
 	}
 
 	const products: Document<Product_t>[] = await ProductModel.find({
-		id: { $in: user.data.wishlist },
+		_id: { $in: user.data.wishlist },
 	})
 	const parsedProducts = products.map((product) => product.toObject())
 

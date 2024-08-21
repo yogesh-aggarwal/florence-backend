@@ -3,19 +3,18 @@ import { getRequestingUser } from "../../core/helpers"
 import { ResponseMessages } from "../../core/messages"
 import { ProductModel } from "../../models/product"
 import { Product_t } from "../../models/product.types"
-import { UserModel } from "../../models/user"
 import { UserViewHistoryModel } from "../../models/userViewHistory"
 import { UserViewHistory_t } from "../../models/userViewHistory.types"
 
 async function increaseProductViewCount(productID: string) {
 	await ProductModel.updateOne(
-		{ id: { $eq: productID } },
+		{ _id: { $eq: productID } },
 		{ $inc: { "stats.views": 1 } }
 	)
 }
 
 async function addToViewHistory(userID: string, productID: string) {
-	const doesExist = await UserModel.exists({ userID: userID })
+	const doesExist = await UserViewHistoryModel.exists({ userID: userID })
 	if (!doesExist) {
 		// Create a new view history for the user
 		const model = new UserViewHistoryModel({
@@ -66,7 +65,7 @@ async function addToViewHistory(userID: string, productID: string) {
 
 export default async function getProductByID(req: Request, res: Response) {
 	const product: Product_t | null = await ProductModel.findOne({
-		id: { $eq: req.params.id },
+		_id: { $eq: req.params.id },
 	})
 	if (!product) {
 		return res.status(404).send({

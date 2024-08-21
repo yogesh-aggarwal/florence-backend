@@ -10,6 +10,9 @@ const ProductDescriptionItemSchema = new Schema({
 
 const ProductDetailsSchema = new Schema({
 	stock: { type: Number, required: true },
+	tags: { type: [String], required: true },
+	categories: { type: [String], required: true },
+
 	description: { type: [ProductDescriptionItemSchema], required: true },
 	deliveryInfo: { type: [ProductDescriptionItemSchema], required: true },
 	careInstructions: { type: [ProductDescriptionItemSchema], required: true },
