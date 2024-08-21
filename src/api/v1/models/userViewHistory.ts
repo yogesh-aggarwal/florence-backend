@@ -15,7 +15,7 @@ const UserViewHistorySchema = new Schema({
 
 // --------------------------------------------------------------------------------------
 
-export const UserViewHistory = model(
+export const UserViewHistoryModel = model(
 	"user_view_history",
 	UserViewHistorySchema,
 	"user_view_history"

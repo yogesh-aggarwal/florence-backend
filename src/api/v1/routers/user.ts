@@ -3,12 +3,12 @@ import jwt from "jsonwebtoken"
 
 import { JWT_SECRET } from "../../../core/constants"
 import { ResponseMessages } from "../core/messages"
-import { User } from "../models/user"
+import { UserModel } from "../models/user"
 
 export const userRouter = Router()
 
 userRouter.patch("/updateProfile", async (req, res) => {
-	await User.updateOne(
+	await UserModel.updateOne(
 		{ email: req.body["email"] },
 		{ $set: { wishlist: req.body["wishlist"] } }
 	)
@@ -20,7 +20,9 @@ userRouter.delete("/deleteAccount", async (req, res) => {
 	const { email } = req.body
 
 	// If the provided email is not available in the database, return error
-	const user: Document | null = await User.findOne({ email: { $eq: email } })
+	const user: Document | null = await UserModel.findOne({
+		email: { $eq: email },
+	})
 	if (!user) {
 		res.status(401).send({ message: ResponseMessages.INVALID_REQUEST })
 		return
@@ -41,6 +43,6 @@ userRouter.delete("/deleteAccount", async (req, res) => {
 	}
 
 	// Delete user's information from the database and return a success message
-	await User.deleteOne({ email: { $eq: email } })
+	await UserModel.deleteOne({ email: { $eq: email } })
 	res.status(200).send({ message: ResponseMessages.SUCCESS })
 })

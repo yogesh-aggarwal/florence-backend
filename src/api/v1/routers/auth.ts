@@ -7,7 +7,7 @@ import mongoose, { Document } from "mongoose"
 import { GCP_OAUTH_CLIENT_ID, JWT_SECRET } from "../../../core/constants"
 import { generatePasswordHash, validatePassword } from "../../../core/utils"
 import { ResponseMessages } from "../core/messages"
-import { User } from "../models/user"
+import { UserModel } from "../models/user"
 import { User_t } from "../models/user.types"
 
 export const authRouter = Router()
@@ -35,7 +35,7 @@ authRouter.post("/login", async (req, res) => {
 	}
 
 	// Step 2: Check if user already exists, if not then raise error
-	const user: User_t | null = await User.findOne({ email: { $eq: email } })
+	const user: User_t | null = await UserModel.findOne({ email: { $eq: email } })
 	if (!user) {
 		res.status(401).send({ message: ResponseMessages.INVALID_REQUEST })
 		return
@@ -69,7 +69,9 @@ authRouter.post("/signup", async (req, res) => {
 	}
 
 	// Step 2: Checking if user already exists, if yes raise error
-	const user: Document | null = await User.findOne({ email: { $eq: email } })
+	const user: Document | null = await UserModel.findOne({
+		email: { $eq: email },
+	})
 	if (user) {
 		res.status(404).send({ message: "email already exists" })
 		return
@@ -86,7 +88,7 @@ authRouter.post("/signup", async (req, res) => {
 	password = await generatePasswordHash(password)
 
 	// Step 4: Creating a variable which stores the information of the new user
-	const newUser: Document = new User({
+	const newUser: Document = new UserModel({
 		_id: new mongoose.Types.ObjectId(),
 		email: email,
 		password: password,
@@ -134,11 +136,11 @@ authRouter.post("/loginWithGoogle", async (req, res) => {
 		res.status(401).send()
 		return
 	}
-	const user: Document | null = await User.findOne({
+	const user: Document | null = await UserModel.findOne({
 		email: { $eq: payload.email },
 	})
 	if (!user) {
-		const newUser: Document = new User({
+		const newUser: Document = new UserModel({
 			_id: new mongoose.Types.ObjectId(),
 			email: payload.email,
 			password: "",

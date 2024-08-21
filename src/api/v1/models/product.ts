@@ -39,6 +39,10 @@ const ProductSchema = new Schema({
 
 // --------------------------------------------------------------------------------------
 
-export const Product = model<Product_t>("product", ProductSchema, "products")
+export const ProductModel = model<Product_t>(
+	"product",
+	ProductSchema,
+	"products"
+)
 
 // --------------------------------------------------------------------------------------

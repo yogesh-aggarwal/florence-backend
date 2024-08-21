@@ -9,8 +9,8 @@ import {
 	RAZORPAY_SECRET,
 } from "../../../core/constants"
 import { OrderModel } from "../models/orders"
-import { Product } from "../models/product"
-import { User } from "../models/user"
+import { ProductModel } from "../models/product"
+import { UserModel } from "../models/user"
 
 export const orderRouter = Router()
 
@@ -37,7 +37,7 @@ orderRouter.get("/all", async (req, res) => {
 			return
 		}
 
-		const user = await User.findOne({ email: tokenemail })
+		const user = await UserModel.findOne({ email: tokenemail })
 
 		if (!user) {
 			res.status(404).send({ message: "User not found" })
@@ -105,7 +105,7 @@ orderRouter.post("/place", async (req, res) => {
 	}
 	const productIds = Object.keys(req.body["cart"])
 
-	let products = await Product.find({ id: { $in: productIds } })
+	let products = await ProductModel.find({ id: { $in: productIds } })
 	let productPrices: { [key: string]: number } = {}
 
 	for (let product of products) {

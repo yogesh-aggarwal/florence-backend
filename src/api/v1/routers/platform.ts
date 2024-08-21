@@ -1,17 +1,17 @@
 import { Router } from "express"
 
 import { ResponseMessages } from "../core/messages"
-import { Platform } from "../models/platform"
+import { PlatformModel } from "../models/platform"
 import { PlatformHomeSection_t } from "../models/platform.types"
-import { Product } from "../models/product"
+import { ProductModel } from "../models/product"
 import { Product_t } from "../models/product.types"
-import { User } from "../models/user"
+import { UserModel } from "../models/user"
 
 export const platformRouter = Router()
 
 platformRouter.post("/home", async (req, res) => {
 	try {
-		const data: PlatformHomeSection_t | null = await Platform.findOne({
+		const data: PlatformHomeSection_t | null = await PlatformModel.findOne({
 			id: "home",
 		})
 		if (!data) {
@@ -27,7 +27,7 @@ platformRouter.post("/home", async (req, res) => {
 				const ids = Object.values(category)[0]
 				const categoryName = Object.keys(category)[0]
 
-				const products = await Product.find({ id: { $in: ids } })
+				const products = await ProductModel.find({ id: { $in: ids } })
 				let arr = []
 				for (let product of products) {
 					arr.push(product)
@@ -42,7 +42,7 @@ platformRouter.post("/home", async (req, res) => {
 		let email = req.body["email"]
 		if (!email) return res.status(200).send({ response })
 
-		const user = await User.findOne({ email: email })
+		const user = await UserModel.findOne({ email: email })
 
 		const url = "http://127.0.0.1:5000/recommended_products"
 		const method = "POST"
@@ -64,7 +64,7 @@ platformRouter.post("/home", async (req, res) => {
 
 		let ans = await fetchRes.json()
 		let recommended_product_ids = ans["data"]
-		const recommended_products: Product_t[] = await Product.find({
+		const recommended_products: Product_t[] = await ProductModel.find({
 			id: { $in: recommended_product_ids },
 		})
 		// response["recommendedProducts"] = recommended_products

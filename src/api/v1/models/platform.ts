@@ -3,4 +3,4 @@ import { Platform_t } from "./platform.types"
 
 let platformSchema = new Schema({}, { strict: false })
 
-export const Platform = model<Platform_t>("platform", platformSchema)
+export const PlatformModel = model<Platform_t>("platform", platformSchema)

@@ -44,4 +44,4 @@ const UserSchema = new Schema({
 	data: { type: UserDataSchema, required: true },
 })
 
-export const User = mongoose.model<User_t>("user", UserSchema, "users")
+export const UserModel = mongoose.model<User_t>("user", UserSchema, "users")
