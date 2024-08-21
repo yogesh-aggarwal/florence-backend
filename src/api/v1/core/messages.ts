@@ -9,5 +9,7 @@ export enum ResponseMessages {
 	AUTH_USER_DOES_NOT_EXIST = "User does not exist",
 	AUTH_PASSWORD_INVALID = "Password is invalid",
 
+	RESOURCE_ALREADY_EXISTS = "Resource already exists",
+	RESOURCE_DOES_NOT_EXISTS = "Resource does not exist",
 	INVALID_RESOURCE_ID = "Invalid resource id",
 }
