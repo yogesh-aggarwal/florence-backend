@@ -3,6 +3,8 @@ import { ResponseMessages } from "../../../core/messages"
 import { ProductModel } from "../../../models/product"
 import { Product_t } from "../../../models/product.types"
 
+// --------------------------------------------------------------------------------------
+
 export default async function getProductsBySearch(req: Request, res: Response) {
 	const query: string = req.params.query
 
@@ -25,3 +27,5 @@ export default async function getProductsBySearch(req: Request, res: Response) {
 		.status(200)
 		.send({ message: ResponseMessages.SUCCESS, data: product })
 }
+
+// --------------------------------------------------------------------------------------

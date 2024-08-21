@@ -10,6 +10,8 @@ import { ResponseMessages } from "../../core/messages"
 import { UserModel } from "../../models/user"
 import { User_t } from "../../models/user.types"
 
+// --------------------------------------------------------------------------------------
+
 const bodySchema = z.object({
 	name: z.string().min(3).trim(),
 	email: z.string().email().trim(),

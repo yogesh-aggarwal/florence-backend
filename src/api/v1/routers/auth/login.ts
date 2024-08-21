@@ -9,10 +9,14 @@ import { ResponseMessages } from "../../core/messages"
 import { UserModel } from "../../models/user"
 import { User_t } from "../../models/user.types"
 
+// --------------------------------------------------------------------------------------
+
 const bodySchema = z.object({
 	email: z.string().email(),
 	password: z.string().min(8),
 })
+
+// --------------------------------------------------------------------------------------
 
 export default async function authLogin(req: Request, res: Response) {
 	/**
@@ -58,3 +62,5 @@ export default async function authLogin(req: Request, res: Response) {
 		.status(200)
 		.send({ message: ResponseMessages.SUCCESS, token: token, user: user })
 }
+
+// --------------------------------------------------------------------------------------

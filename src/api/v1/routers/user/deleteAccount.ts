@@ -6,6 +6,8 @@ import { JWT_SECRET } from "../../../../core/constants"
 import { ResponseMessages } from "../../core/messages"
 import { UserModel } from "../../models/user"
 
+// --------------------------------------------------------------------------------------
+
 export default async function deleteUserAccount(req: Request, res: Response) {
 	// Retrieving the data
 	const { email } = req.body
@@ -37,3 +39,5 @@ export default async function deleteUserAccount(req: Request, res: Response) {
 	await UserModel.deleteOne({ email: { $eq: email } })
 	res.status(200).send({ message: ResponseMessages.SUCCESS })
 }
+
+// --------------------------------------------------------------------------------------

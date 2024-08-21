@@ -2,6 +2,8 @@ import { Request, Response } from "express"
 import { ResponseMessages } from "../../../core/messages"
 import { ProductModel } from "../../../models/product"
 
+// --------------------------------------------------------------------------------------
+
 export default async function getProductsByCategory(
 	req: Request,
 	res: Response
@@ -17,3 +19,5 @@ export default async function getProductsByCategory(
 		.status(200)
 		.send({ message: ResponseMessages.SUCCESS, data: parsedProducts })
 }
+
+// --------------------------------------------------------------------------------------

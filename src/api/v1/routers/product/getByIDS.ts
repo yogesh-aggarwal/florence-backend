@@ -4,6 +4,8 @@ import { ResponseMessages } from "../../core/messages"
 import { ProductModel } from "../../models/product"
 import { Product_t } from "../../models/product.types"
 
+// --------------------------------------------------------------------------------------
+
 export default async function getProductsByIDS(req: Request, res: Response) {
 	const ids: string[] = req.body["ids"]
 
@@ -17,3 +19,5 @@ export default async function getProductsByIDS(req: Request, res: Response) {
 		.status(200)
 		.send({ message: ResponseMessages.SUCCESS, data: parsedProducts })
 }
+
+// --------------------------------------------------------------------------------------

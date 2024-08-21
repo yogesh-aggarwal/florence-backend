@@ -6,6 +6,8 @@ import { JWT_SECRET } from "../../../../core/constants"
 import { OrderModel } from "../../models/orders"
 import { UserModel } from "../../models/user"
 
+// --------------------------------------------------------------------------------------
+
 export default async function getAllOrders(req: Request, res: Response) {
 	{
 		// TODO:
@@ -46,3 +48,5 @@ export default async function getAllOrders(req: Request, res: Response) {
 		}
 	}
 }
+
+// --------------------------------------------------------------------------------------

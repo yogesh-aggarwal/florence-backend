@@ -6,12 +6,16 @@ import { Product_t } from "../../models/product.types"
 import { UserViewHistoryModel } from "../../models/userViewHistory"
 import { UserViewHistory_t } from "../../models/userViewHistory.types"
 
+// --------------------------------------------------------------------------------------
+
 async function increaseProductViewCount(productID: string) {
 	await ProductModel.updateOne(
 		{ _id: { $eq: productID } },
 		{ $inc: { "stats.views": 1 } }
 	)
 }
+
+// --------------------------------------------------------------------------------------
 
 async function addToViewHistory(userID: string, productID: string) {
 	const doesExist = await UserViewHistoryModel.exists({ userID: userID })
@@ -63,6 +67,8 @@ async function addToViewHistory(userID: string, productID: string) {
 	)
 }
 
+// --------------------------------------------------------------------------------------
+
 export default async function getProductByID(req: Request, res: Response) {
 	const product: Product_t | null = await ProductModel.findOne({
 		_id: { $eq: req.params.id },
@@ -89,3 +95,5 @@ export default async function getProductByID(req: Request, res: Response) {
 		.status(200)
 		.send({ message: ResponseMessages.SUCCESS, data: product })
 }
+
+// --------------------------------------------------------------------------------------

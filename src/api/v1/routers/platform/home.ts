@@ -6,6 +6,8 @@ import { ProductModel } from "../../models/product"
 import { Product_t } from "../../models/product.types"
 import { UserModel } from "../../models/user"
 
+// --------------------------------------------------------------------------------------
+
 export default async function getPlatformHomeData(req: Request, res: Response) {
 	try {
 		const data: PlatformHomeSection_t | null = await PlatformModel.findOne({
@@ -72,3 +74,6 @@ export default async function getPlatformHomeData(req: Request, res: Response) {
 		return res.status(500).send({ error: "Internal server error" })
 	}
 }
+
+// --------------------------------------------------------------------------------------
+

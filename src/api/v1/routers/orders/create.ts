@@ -2,6 +2,8 @@ import { Request, Response } from "express"
 import Razorpay from "razorpay"
 import { RAZORPAY_KEY_ID, RAZORPAY_SECRET } from "../../../../core/constants"
 
+// --------------------------------------------------------------------------------------
+
 export default async function createOrder(req: Request, res: Response) {
 	var instance = new Razorpay({
 		key_id: RAZORPAY_KEY_ID,
@@ -19,3 +21,5 @@ export default async function createOrder(req: Request, res: Response) {
 		order: order,
 	})
 }
+
+// --------------------------------------------------------------------------------------

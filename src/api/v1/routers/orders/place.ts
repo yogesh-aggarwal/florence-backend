@@ -4,6 +4,8 @@ import { RAZORPAY_KEY_ID, RAZORPAY_SECRET } from "../../../../core/constants"
 import { OrderModel } from "../../models/orders"
 import { ProductModel } from "../../models/product"
 
+// --------------------------------------------------------------------------------------
+
 export default async function placeOrder(req: Request, res: Response) {
 	let razorpay_order_id = await OrderModel.findOne({
 		id: { $eq: req.body["razorpay_order_id"] },
@@ -66,3 +68,5 @@ export default async function placeOrder(req: Request, res: Response) {
 		.status(200)
 		.send({ message: "order placed successfully", orderId: order.id })
 }
+
+// --------------------------------------------------------------------------------------

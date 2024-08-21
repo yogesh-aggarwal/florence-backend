@@ -6,6 +6,8 @@ import { ProductModel } from "../../models/product"
 import { Product_t } from "../../models/product.types"
 import { User_t } from "../../models/user.types"
 
+// --------------------------------------------------------------------------------------
+
 export default async function getWishlistProducts(req: Request, res: Response) {
 	const user: User_t | null = getRequestingUser(req)
 	if (!user) {
@@ -21,3 +23,5 @@ export default async function getWishlistProducts(req: Request, res: Response) {
 		.status(200)
 		.send({ message: ResponseMessages.SUCCESS, data: parsedProducts })
 }
+
+// --------------------------------------------------------------------------------------
