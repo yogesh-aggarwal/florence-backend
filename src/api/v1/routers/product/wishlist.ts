@@ -1,37 +1,23 @@
 import { Request, Response } from "express"
+import { Document } from "mongoose"
+import { getRequestingUser } from "../../core/helpers"
+import { ResponseMessages } from "../../core/messages"
 import { ProductModel } from "../../models/product"
 import { Product_t } from "../../models/product.types"
-import { UserModel } from "../../models/user"
 import { User_t } from "../../models/user.types"
 
 export default async function getWishlistProducts(req: Request, res: Response) {
-	const email: string = req.body["email"]
-	const user: User_t | null = await UserModel.findOne({
-		email: email,
-	}).populate("wishlist")
+	const user: User_t | null = getRequestingUser(req)
 	if (!user) {
-		res.status(404).send({
-			message: "User not found",
-		})
-		return
+		return res.status(404).json({ message: ResponseMessages.AUTH_INVALID })
 	}
 
-	const products: Product_t[] = await ProductModel.find({
-		id: { $in: user.wishlist },
+	const products: Document<Product_t>[] = await ProductModel.find({
+		id: { $in: user.data.wishlist },
 	})
-	let reqProducts: any[] = []
-	for (let product of products) {
-		let pro: any = {}
-		pro["id"] = product._id.toString()
-		pro["title"] = product.title
-		pro["price"] = product.price
-		pro["images"] = product.images
+	const parsedProducts = products.map((product) => product.toObject())
 
-		reqProducts.push(pro)
-	}
-
-	res.status(200).send({
-		message: "Products fetched",
-		data: reqProducts,
-	})
+	return res
+		.status(200)
+		.send({ message: ResponseMessages.SUCCESS, data: parsedProducts })
 }
