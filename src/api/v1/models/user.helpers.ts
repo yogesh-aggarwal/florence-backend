@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt"
 import { Types } from "mongoose"
 
+import { generateNanoid } from "../../../core/utils"
 import { UserModel } from "./user"
 import { User_t } from "./user.types"
 
@@ -26,6 +27,7 @@ export async function createNewUser(data: {
 	password: string
 }): Promise<User_t> {
 	const encryptedPassword = await generatePasswordHash(data.password)
+	const dpURL = `https://picsum.photos/seed/${generateNanoid(5)}/200/200`
 
 	const user: User_t = {
 		_id: new Types.ObjectId(),
@@ -36,8 +38,7 @@ export async function createNewUser(data: {
 			isUpdated: false,
 		},
 
-		// TODO: insert nanoid here
-		dp: `https://picsum.photos/seed/${"nanoid"}/200/200`,
+		dp: dpURL,
 		name: data.name,
 		email: data.name,
 		password: encryptedPassword,
@@ -49,6 +50,7 @@ export async function createNewUser(data: {
 	}
 	const validation = User_t.safeParse(user)
 	if (!validation.success) {
+		// Extremely less likely to happen but still a possibility
 		throw new Error("User is not valid due to some system error")
 	}
 
@@ -56,3 +58,5 @@ export async function createNewUser(data: {
 
 	return user
 }
+
+// --------------------------------------------------------------------------------------
