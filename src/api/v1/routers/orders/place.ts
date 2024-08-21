@@ -9,6 +9,8 @@ import { OrderModel } from "../../models/orders"
 import { Order_t, OrderItem_t, OrderStatus } from "../../models/orders.types"
 import { ProductModel } from "../../models/product"
 import { UserAddress_t } from "../../models/user.types"
+import { MailFactory } from "../../services/mail/factory"
+import { sendEmail } from "../../services/mail/mail"
 import { prepareOrderQuotation } from "../../services/quotation/quotation"
 
 // --------------------------------------------------------------------------------------
@@ -135,6 +137,10 @@ export default async function placeOrder(req: Request, res: Response) {
 		return res.status(401).send({ message: ResponseMessages.AUTH_INVALID })
 	}
 	const order = await createOrder(body, user._id.toString())
+
+	// Send the order confirmation email
+	// TODO: May be dispatch it to a queuing system like kafka for non-blocking & guaranteed delivery
+	await sendEmail(MailFactory.orderPlaced(user.email, order._id.toString()))
 
 	return res
 		.status(200)
