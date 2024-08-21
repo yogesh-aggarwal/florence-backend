@@ -1,8 +1,11 @@
+import { Types } from "mongoose"
 import { z } from "zod"
 
 // --------------------------------------------------------------------------------------
 
 export const Coupon_t = z.object({
+	_id: z.instanceof(Types.ObjectId),
+
 	code: z.string(),
 	amount: z.number().nullable(),
 	minAmount: z.number().nullable(),

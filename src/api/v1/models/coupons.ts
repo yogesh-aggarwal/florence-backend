@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose"
 // --------------------------------------------------------------------------------------
 
 const CouponSchema = new Schema({
+	_id: { type: Schema.Types.ObjectId, required: true },
 	code: { type: String, required: true },
 	amount: { type: Number, required: false, default: null },
 	percentage: { type: Number, required: false, default: null },
