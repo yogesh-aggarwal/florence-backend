@@ -32,6 +32,19 @@ if (!GCP_OAUTH_CLIENT_ID) {
 	process.exit(1)
 }
 
+export const MAIL_GMAIL_AUTH_ID: string = process.env.MAIL_GMAIL_AUTH_ID || ""
+if (!MAIL_GMAIL_AUTH_ID) {
+	console.error("Missing MAIL_GMAIL_ID")
+	process.exit(1)
+}
+
+export const MAIL_GMAIL_AUTH_PASSWORD: string =
+	process.env.MAIL_GMAIL_AUTH_PASSWORD || ""
+if (!MAIL_GMAIL_AUTH_PASSWORD) {
+	console.error("Missing MAIL_GMAIL_AUTH_PASSWORD")
+	process.exit(1)
+}
+
 export const RAZORPAY_KEY_ID: string = process.env.RAZORPAY_KEY_ID || ""
 if (!RAZORPAY_KEY_ID) {
 	console.error("Missing RAZORPAY_KEY_ID")
