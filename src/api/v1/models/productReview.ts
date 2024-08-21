@@ -21,9 +21,9 @@ const ProductReviewSchema = new Schema({
 // --------------------------------------------------------------------------------------
 
 export const ProductReview = model<ProductReview_t>(
-	"review",
+	"product_review",
 	ProductReviewSchema,
-	"reviews"
+	"product_reviews"
 )
 
 // --------------------------------------------------------------------------------------
