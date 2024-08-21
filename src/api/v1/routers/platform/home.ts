@@ -1,15 +1,12 @@
-import { Router } from "express"
+import { Request, Response } from "express"
+import { ResponseMessages } from "../../core/messages"
+import { PlatformModel } from "../../models/platform"
+import { PlatformHomeSection_t } from "../../models/platform.types"
+import { ProductModel } from "../../models/product"
+import { Product_t } from "../../models/product.types"
+import { UserModel } from "../../models/user"
 
-import { ResponseMessages } from "../core/messages"
-import { PlatformModel } from "../models/platform"
-import { PlatformHomeSection_t } from "../models/platform.types"
-import { ProductModel } from "../models/product"
-import { Product_t } from "../models/product.types"
-import { UserModel } from "../models/user"
-
-export const platformRouter = Router()
-
-platformRouter.post("/home", async (req, res) => {
+export default async function getPlatformHomeData(req: Request, res: Response) {
 	try {
 		const data: PlatformHomeSection_t | null = await PlatformModel.findOne({
 			id: "home",
@@ -74,4 +71,4 @@ platformRouter.post("/home", async (req, res) => {
 		console.error("Error in getHomeData:", error)
 		return res.status(500).send({ error: "Internal server error" })
 	}
-})
+}

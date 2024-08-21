@@ -1,13 +1,13 @@
 import { Router } from "express"
 import swaggerUI from "swagger-ui-express"
 
-import authMiddleware from "./middlewares/auth"
-import { authRouter } from "./routers/auth"
-import { orderRouter } from "./routers/orders"
-import { platformRouter } from "./routers/platform"
-import { productRouter } from "./routers/product"
-import { userRouter } from "./routers/user"
 import { swaggerSpec } from "./core/swagger"
+import authMiddleware from "./middlewares/auth"
+import { authRouter } from "./routers/auth/router"
+import { orderRouter } from "./routers/orders/router"
+import { platformRouter } from "./routers/platform/router"
+import { productRouter } from "./routers/product/router"
+import { userRouter } from "./routers/user/router"
 
 export const v1 = Router()
 

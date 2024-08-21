@@ -1,21 +1,12 @@
-import { Router } from "express"
+import { Request, Response } from "express"
 import jwt from "jsonwebtoken"
+import { Document } from "mongoose"
 
-import { JWT_SECRET } from "../../../core/constants"
-import { ResponseMessages } from "../core/messages"
-import { UserModel } from "../models/user"
+import { JWT_SECRET } from "../../../../core/constants"
+import { ResponseMessages } from "../../core/messages"
+import { UserModel } from "../../models/user"
 
-export const userRouter = Router()
-
-userRouter.patch("/updateProfile", async (req, res) => {
-	await UserModel.updateOne(
-		{ email: req.body["email"] },
-		{ $set: { wishlist: req.body["wishlist"] } }
-	)
-	res.status(200).send({ message: ResponseMessages.SUCCESS })
-})
-
-userRouter.delete("/deleteAccount", async (req, res) => {
+export default async function deleteUserAccount(req: Request, res: Response) {
 	// Retrieving the data
 	const { email } = req.body
 
@@ -45,4 +36,4 @@ userRouter.delete("/deleteAccount", async (req, res) => {
 	// Delete user's information from the database and return a success message
 	await UserModel.deleteOne({ email: { $eq: email } })
 	res.status(200).send({ message: ResponseMessages.SUCCESS })
-})
+}
