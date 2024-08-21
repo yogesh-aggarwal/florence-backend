@@ -5,7 +5,7 @@ import { z } from "zod"
 
 export const UserViewHistoryItem_t = z.object({
 	productID: z.string(),
-	viewedAt: z.number(),
+	viewedAt: z.array(z.number()),
 })
 export type UserViewHistoryItem_t = z.infer<typeof UserViewHistoryItem_t>
 
