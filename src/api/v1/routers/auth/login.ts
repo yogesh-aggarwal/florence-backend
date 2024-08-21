@@ -25,7 +25,7 @@ export default async function authLogin(req: Request, res: Response) {
 	const body = parseRequestBody<z.infer<typeof bodySchema>>(req, bodySchema)
 	if (!body) {
 		return res
-			.status(401)
+			.status(400)
 			.send({ message: ResponseMessages.INVALID_BODY_CONTENT })
 	}
 

@@ -34,7 +34,7 @@ export default async function authSignup(req: Request, res: Response) {
 	const body = parseRequestBody<z.infer<typeof bodySchema>>(req, bodySchema)
 	if (!body) {
 		return res
-			.status(401)
+			.status(400)
 			.send({ message: ResponseMessages.INVALID_BODY_CONTENT })
 	}
 
@@ -44,7 +44,7 @@ export default async function authSignup(req: Request, res: Response) {
 	const doesExists = await UserModel.exists({ email: { $eq: body.email } })
 	if (doesExists) {
 		return res
-			.status(401)
+			.status(409)
 			.send({ message: ResponseMessages.RESOURCE_ALREADY_EXISTS })
 	}
 

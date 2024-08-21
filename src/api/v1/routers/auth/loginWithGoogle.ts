@@ -40,7 +40,7 @@ export default async function authLoginWithGoogle(req: Request, res: Response) {
 	})
 	const payload = response.getPayload()
 	if (!payload || !payload.email) {
-		return res.status(401).send({ message: ResponseMessages.AUTH_INVALID })
+		return res.status(400).send({ message: ResponseMessages.AUTH_INVALID })
 	}
 
 	/**
