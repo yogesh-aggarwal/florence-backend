@@ -1,76 +1,47 @@
-import mongoose from "mongoose"
-import { User_t, UserAddress_t } from "./user.types"
+import mongoose, { Schema } from "mongoose"
+import { User_t, UserAddressType } from "./user.types"
 
-const Address = new mongoose.Schema<UserAddress_t>({
-	address: {
-		type: String,
-		trim: true,
-		required: true,
-	},
-	city: {
-		type: String,
-		trim: true,
-		required: true,
-	},
-	pincode: {
-		type: String,
-		trim: true,
-		required: true,
-		minLength: 6,
-	},
+const UserMetadataSchema = new Schema({
+	createdAt: { type: Number, required: true },
+	updatedAt: { type: Number, required: true },
+	isUpdated: { type: Boolean, required: true },
 })
 
-const UserSchema = new mongoose.Schema({
-	_id: {
-		type: mongoose.Types.ObjectId,
-		required: true,
-	},
-	email: {
-		type: String,
-		trim: true,
-		required: true,
-		unique: true,
-		lowercase: true,
-		match: [
-			/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-			"Please fill a valid email address",
-		],
-	},
-	password: {
-		type: String,
-		trim: true,
-	},
-	name: {
-		type: String,
-		trim: true,
-		minLength: 4,
-		required: true,
-	},
-	viewHistory: [
-		{
-			type: String,
-		},
-	],
-	// deliveryAddresses: [Address],
-	deliveryAddresses: [{ type: Address }],
-	mobileNumbers: [
-		{
-			type: String,
-			trim: true,
-			minLength: 10,
-			required: true,
-		},
-	],
-	dp: {
-		type: String,
-		trim: true,
-	},
-	wishlist: [
-		{
-			type: String,
-			trim: true,
-		},
-	],
+const UserAddressMetadataSchema = new Schema({
+	createdAt: { type: Number, required: true },
+	updatedAt: { type: Number, required: true },
+	isUpdated: { type: Boolean, required: true },
 })
 
-export const User = mongoose.model<User_t>("users", UserSchema)
+const UserAddressSchema = new Schema({
+	_id: { type: mongoose.Types.ObjectId, required: true },
+	metadata: { type: UserAddressMetadataSchema, required: true },
+	type: { type: String, enum: Object.values(UserAddressType), required: true },
+	isDefault: { type: Boolean, required: true },
+	city: { type: String, required: true },
+	state: { type: String, required: true },
+	country: { type: String, required: true },
+	pincode: { type: String, required: true },
+	landmark: { type: String, required: true },
+	address: { type: String, required: true },
+	phoneNumber: { type: String, required: true },
+	latitude: { type: Number, required: false, default: null },
+	longitude: { type: Number, required: false, default: null },
+})
+
+const UserDataSchema = new Schema({
+	wishlist: { type: [String], required: true },
+	deliveryAddresses: { type: [UserAddressSchema], required: true },
+})
+
+const UserSchema = new Schema({
+	_id: { type: mongoose.Types.ObjectId, required: true },
+	metadata: { type: UserMetadataSchema, required: true },
+	dp: { type: String, required: true },
+	name: { type: String, required: true },
+	email: { type: String, required: true },
+	password: { type: String, required: true },
+	data: { type: UserDataSchema, required: true },
+})
+
+export const User = mongoose.model<User_t>("user", UserSchema, "users")
