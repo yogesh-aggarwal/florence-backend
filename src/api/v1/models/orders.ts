@@ -1,24 +1,40 @@
-import mongoose from "mongoose"
-import { Order_t } from "./orders.types"
+import mongoose, { Schema } from "mongoose"
+import { Order_t, OrderStatus } from "./orders.types"
 
-const OrderTimestampSchema = new mongoose.Schema({
-	placed: Number,
-	transit: Number,
-	delivered: Number,
+const OrderPaymentDetailsSchema = new Schema({
+	razorpayPaymentID: { type: String, required: true },
+	razorpaySignature: { type: String, required: true },
 })
 
-const OrderSchema = new mongoose.Schema({
-	id: String,
-	userID: String,
-	razorpayTransactionID: String,
-	razorpaySignature: String,
-	orderItems: Object,
-	timestamps: OrderTimestampSchema,
+const OrderTrackingStatusSchema = new Schema({
+	timestamp: { type: Number, required: true },
+	status: { type: String, enum: Object.values(OrderStatus), required: true },
+})
+
+const OrderTrackingSchema = new Schema({
 	currentStatus: {
 		type: String,
-		enum: ["placed", "transit", "delivered"],
+		enum: Object.values(OrderStatus),
+		required: true,
 	},
-	priceItems: Object,
+	history: { type: [OrderTrackingStatusSchema], required: true },
 })
 
-export const Order = mongoose.model<Order_t>("Order", OrderSchema)
+const OrderItemsSchema = new Schema({
+	id: { type: String, required: true },
+	price: { type: Number, required: true },
+})
+
+const OrderSchema = new Schema({
+	_id: { type: mongoose.Types.ObjectId, required: true },
+	userID: { type: String, required: true },
+	paymentDetails: { type: OrderPaymentDetailsSchema, required: true },
+	tracking: { type: OrderTrackingSchema, required: true },
+	items: { type: [OrderItemsSchema], required: true },
+})
+
+export const OrderModel = mongoose.model<Order_t>(
+	"order",
+	OrderSchema,
+	"orders"
+)

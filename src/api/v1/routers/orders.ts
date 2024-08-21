@@ -8,7 +8,7 @@ import {
 	RAZORPAY_KEY_ID,
 	RAZORPAY_SECRET,
 } from "../../../core/constants"
-import { Order } from "../models/orders"
+import { OrderModel } from "../models/orders"
 import { Product } from "../models/product"
 import { User } from "../models/user"
 
@@ -16,7 +16,7 @@ export const orderRouter = Router()
 
 orderRouter.get("/:id", async (req, res) => {
 	const id = req.params.id
-	let order = await Order.findOne({ id: { $eq: id } })
+	let order = await OrderModel.findOne({ id: { $eq: id } })
 	res.status(200).send({ order: order })
 })
 
@@ -45,7 +45,7 @@ orderRouter.get("/all", async (req, res) => {
 		}
 
 		const userId = user._id.toString()
-		const orders = await Order.find({ userID: new ObjectId(userId) })
+		const orders = await OrderModel.find({ userID: new ObjectId(userId) })
 
 		res
 			.status(200)
@@ -78,13 +78,13 @@ orderRouter.post("/create", async (req, res) => {
 })
 
 orderRouter.post("/place", async (req, res) => {
-	let razorpay_order_id = await Order.findOne({
+	let razorpay_order_id = await OrderModel.findOne({
 		id: { $eq: req.body["razorpay_order_id"] },
 	})
-	let razorpay_payment_id = await Order.findOne({
+	let razorpay_payment_id = await OrderModel.findOne({
 		id: { $eq: req.body["razorpay_payment_id"] },
 	})
-	let razorpay_signature = await Order.findOne({
+	let razorpay_signature = await OrderModel.findOne({
 		id: { $eq: req.body["razorpay_signature"] },
 	})
 	if (razorpay_order_id || razorpay_payment_id || razorpay_signature) {
@@ -112,7 +112,7 @@ orderRouter.post("/place", async (req, res) => {
 		productPrices[product.id] = product.price
 	}
 
-	const order = new Order({
+	const order = new OrderModel({
 		id: req.body["razorpay_order_id"],
 		userID: req.body["userId"],
 		razorpay_payment_id: req.body["razorpay_payment_id"],
