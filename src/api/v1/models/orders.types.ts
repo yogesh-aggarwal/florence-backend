@@ -8,7 +8,7 @@ export const OrderMetadata_t = z.object({
 	createdAt: z.number(),
 
 	editedAt: z.number(),
-	editedBy: z.string(),
+	editedBy: z.union([z.string(), z.null()]),
 	isEdited: z.boolean(),
 })
 export type OrderMetadata_t = z.infer<typeof OrderMetadata_t>
@@ -34,10 +34,71 @@ export enum OrderStatus {
 
 // --------------------------------------------------------------------------------------
 
+export const OrderPaymentDetailsQuotationDelivery_t = z.object({
+	base: z.number(),
+	additional: z.number(),
+	total: z.number(),
+})
+export type OrderPaymentDetailsQuotationDelivery_t = z.infer<
+	typeof OrderPaymentDetailsQuotationDelivery_t
+>
+
+// --------------------------------------------------------------------------------------
+
+export const OrderPaymentDetailsQuotationServices_t = z.object({
+	label: z.string(),
+	amount: z.number(),
+})
+export type OrderPaymentDetailsQuotationServices_t = z.infer<
+	typeof OrderPaymentDetailsQuotationServices_t
+>
+
+// --------------------------------------------------------------------------------------
+
+export const OrderPaymentDetailsQuotationDiscount_t = z.object({
+	label: z.string(),
+	percentage: z.number(),
+	amount: z.number(),
+})
+export type OrderPaymentDetailsQuotationDiscount_t = z.infer<
+	typeof OrderPaymentDetailsQuotationDiscount_t
+>
+
+// --------------------------------------------------------------------------------------
+
+export const OrderPaymentDetailsQuotationTax_t = z.object({
+	label: z.string(),
+	percentage: z.number(),
+	amount: z.number(),
+})
+export type OrderPaymentDetailsQuotationTax_t = z.infer<
+	typeof OrderPaymentDetailsQuotationTax_t
+>
+
+// --------------------------------------------------------------------------------------
+
+export const OrderPaymentDetailsQuotation_t = z.object({
+	items: z.number(),
+	delivery: OrderPaymentDetailsQuotationDelivery_t,
+	services: z.array(OrderPaymentDetailsQuotationServices_t),
+	discount: OrderPaymentDetailsQuotationDiscount_t,
+	taxes: z.array(OrderPaymentDetailsQuotationTax_t),
+
+	net: z.number(),
+})
+export type OrderPaymentDetailsQuotation_t = z.infer<
+	typeof OrderPaymentDetailsQuotation_t
+>
+
+// --------------------------------------------------------------------------------------
+
 export const OrderPaymentDetails_t = z.object({
+	recieptID: z.union([z.string(), z.null()]),
+
+	quotation: OrderPaymentDetailsQuotation_t,
+
 	razorpayPaymentID: z.string(),
 	razorpaySignature: z.string(),
-	recieptID: z.union([z.string(), z.null()]),
 })
 export type OrderPaymentDetails_t = z.infer<typeof OrderPaymentDetails_t>
 
@@ -45,6 +106,7 @@ export type OrderPaymentDetails_t = z.infer<typeof OrderPaymentDetails_t>
 
 export const OrderTrackingStatus_t = z.object({
 	timestamp: z.number(),
+	message: z.union([z.string(), z.null()]),
 	status: z.nativeEnum(OrderStatus),
 })
 export type OrderTrackingStatus_t = z.infer<typeof OrderTrackingStatus_t>
@@ -59,11 +121,12 @@ export type OrderTracking_t = z.infer<typeof OrderTracking_t>
 
 // --------------------------------------------------------------------------------------
 
-export const OrderItems_t = z.object({
+export const OrderItem_t = z.object({
 	id: z.string(),
+	quantity: z.number(),
 	price: z.number(),
 })
-export type OrderItems_t = z.infer<typeof OrderItems_t>
+export type OrderItem_t = z.infer<typeof OrderItem_t>
 
 // --------------------------------------------------------------------------------------
 
@@ -71,8 +134,10 @@ export const Order_t = z.object({
 	_id: z.instanceof(ObjectId),
 	metadata: OrderMetadata_t,
 
+	orderID: z.string(),
+
 	tracking: OrderTracking_t,
-	items: z.array(OrderItems_t),
+	items: z.array(OrderItem_t),
 	paymentDetails: OrderPaymentDetails_t,
 })
 export type Order_t = z.infer<typeof Order_t>
