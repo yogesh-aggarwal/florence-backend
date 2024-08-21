@@ -77,7 +77,7 @@ export default async function getProductByID(req: Request, res: Response) {
 	/**
 	 * TODO: Add to view history in a non blocking way.
 	 *
-	 * Maybe use a threaded queue? (Not recommended, the system might die & we might lose data)
+	 * Maybe use a threaded queue? (Not recommended, the system might die & we'll end up lose data)
 	 * Or a separate microservice? (Not recommended, too much overhead)
 	 * Or kafka? (Seems most appropriate, it guarantees delivery)
 	 */
@@ -86,8 +86,7 @@ export default async function getProductByID(req: Request, res: Response) {
 		await addToViewHistory(user._id.toString(), req.params.id)
 	}
 
-	res.status(200).send({
-		message: "Product fetched",
-		data: product,
-	})
+	return res
+		.status(200)
+		.send({ message: ResponseMessages.SUCCESS, data: product })
 }
