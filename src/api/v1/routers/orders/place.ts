@@ -6,18 +6,10 @@ import { RAZORPAY_KEY_ID, RAZORPAY_SECRET } from "../../../../core/constants"
 import { getRequestingUser, parseRequestBody } from "../../core/helpers"
 import { ResponseMessages } from "../../core/messages"
 import { OrderModel } from "../../models/orders"
-import {
-	Order_t,
-	OrderItem_t,
-	OrderPaymentDetailsQuotation_t,
-	OrderPaymentDetailsQuotationDelivery_t,
-	OrderPaymentDetailsQuotationDiscount_t,
-	OrderPaymentDetailsQuotationServices_t,
-	OrderPaymentDetailsQuotationTax_t,
-	OrderStatus,
-} from "../../models/orders.types"
+import { Order_t, OrderItem_t, OrderStatus } from "../../models/orders.types"
 import { ProductModel } from "../../models/product"
 import { UserAddress_t } from "../../models/user.types"
+import { prepareOrderQuotation } from "../../services/quotation/quotation"
 
 // --------------------------------------------------------------------------------------
 
@@ -26,8 +18,9 @@ const bodySchema = z.object({
 	razorpayPaymentID: z.string(),
 	razorpaySignature: z.string(),
 
-	cart: z.record(z.number()),
 	address: UserAddress_t,
+	cart: z.record(z.number()), // { productID: quantity }
+	coupon: z.union([z.string(), z.null()]),
 })
 
 // --------------------------------------------------------------------------------------
@@ -44,88 +37,6 @@ async function verifyOrderPayment(orderID: string) {
 
 // --------------------------------------------------------------------------------------
 
-namespace Quotation {
-	async function calculateDelivery(
-		address: UserAddress_t
-	): Promise<OrderPaymentDetailsQuotationDelivery_t> {
-		const quotation: OrderPaymentDetailsQuotationDelivery_t = {
-			base: 0,
-			additional: 0,
-			total: 0,
-		}
-
-		return quotation
-	}
-
-	async function calculateServices(): Promise<
-		OrderPaymentDetailsQuotationServices_t[]
-	> {
-		return []
-	}
-
-	async function calculateDiscount(): Promise<OrderPaymentDetailsQuotationDiscount_t> {
-		const quotation: OrderPaymentDetailsQuotationDiscount_t = {
-			amount: 0,
-			percentage: 0,
-			label: "",
-		}
-
-		return quotation
-	}
-
-	async function calculateTaxes(
-		net: number
-	): Promise<OrderPaymentDetailsQuotationTax_t[]> {
-		return []
-	}
-
-	function calculateNet(quotation: OrderPaymentDetailsQuotation_t): number {
-		return (
-			quotation.items +
-			quotation.delivery.total +
-			quotation.services.reduce((acc, x) => acc + x.amount, 0) -
-			quotation.discount.amount +
-			quotation.taxes.reduce((acc, x) => acc + x.amount, 0)
-		)
-	}
-
-	export async function prepare(
-		body: z.infer<typeof bodySchema>,
-		orderItems: OrderItem_t[]
-	): Promise<OrderPaymentDetailsQuotation_t> {
-		const quotation: OrderPaymentDetailsQuotation_t = {
-			items: orderItems.reduce((acc, x) => acc + x.price, 0),
-			delivery: await calculateDelivery(body.address),
-			services: [],
-			taxes: [],
-			discount: {
-				amount: 0,
-				percentage: 0,
-				label: "",
-			},
-
-			net: 0,
-		}
-
-		// Calculate charges
-		quotation.services = await calculateServices()
-		quotation.discount = await calculateDiscount()
-
-		// Prepare the net amount for tax calculation
-		quotation.net = calculateNet(quotation)
-
-		// Calculate taxes
-		quotation.taxes = await calculateTaxes(quotation.net)
-
-		// Now, calculate the net amount
-		quotation.net = calculateNet(quotation)
-
-		return quotation
-	}
-}
-
-// --------------------------------------------------------------------------------------
-
 async function createOrder(body: z.infer<typeof bodySchema>, userID: string) {
 	const productIDS = Object.keys(body.cart)
 	const products = await ProductModel.find({ id: { $in: productIDS } })
@@ -138,7 +49,11 @@ async function createOrder(body: z.infer<typeof bodySchema>, userID: string) {
 	}))
 
 	// Prepare the quotation
-	const quotation = await Quotation.prepare(body, orderItems)
+	const quotation = await prepareOrderQuotation(
+		body.address,
+		orderItems,
+		body.coupon
+	)
 
 	// Prepare the order
 	const order: Order_t = {
@@ -176,7 +91,6 @@ async function createOrder(body: z.infer<typeof bodySchema>, userID: string) {
 	if (!validation.success) {
 		throw new Error("Failed to validate the order's schema")
 	}
-
 	await new OrderModel(order).save()
 
 	return order
