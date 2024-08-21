@@ -66,7 +66,7 @@ export default async function authLoginWithGoogle(req: Request, res: Response) {
 
 	return res
 		.status(200)
-		.send({ message: "signed up successfully", token: token, user: user })
+		.send({ message: ResponseMessages.SUCCESS, token: token, user: user })
 }
 
 // --------------------------------------------------------------------------------------
