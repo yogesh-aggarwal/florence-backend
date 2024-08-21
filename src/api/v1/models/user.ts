@@ -25,8 +25,8 @@ const UserAddressSchema = new Schema({
 	landmark: { type: String, required: true },
 	address: { type: String, required: true },
 	phoneNumber: { type: String, required: true },
-	latitude: { type: Number, required: false, default: null },
-	longitude: { type: Number, required: false, default: null },
+	latitude: { type: Number, required: true },
+	longitude: { type: Number, required: true },
 })
 
 const UserDataSchema = new Schema({

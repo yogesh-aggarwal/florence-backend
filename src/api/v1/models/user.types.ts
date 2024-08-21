@@ -46,8 +46,8 @@ export const UserAddress_t = z.object({
 	address: z.string(),
 	phoneNumber: z.string(),
 
-	latitude: z.number().nullable(),
-	longitude: z.number().nullable(),
+	latitude: z.number(),
+	longitude: z.number(),
 })
 export type UserAddress_t = z.infer<typeof UserAddress_t>
 

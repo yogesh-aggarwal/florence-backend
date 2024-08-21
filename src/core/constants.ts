@@ -32,6 +32,12 @@ if (!GCP_OAUTH_CLIENT_ID) {
 	process.exit(1)
 }
 
+export const GOOGLE_MAPS_API_KEY: string = process.env.GOOGLE_MAPS_API_KEY || ""
+if (!GOOGLE_MAPS_API_KEY) {
+	console.error("Missing GOOGLE_MAPS_API_KEY")
+	process.exit(1)
+}
+
 export const MAIL_GMAIL_AUTH_ID: string = process.env.MAIL_GMAIL_AUTH_ID || ""
 if (!MAIL_GMAIL_AUTH_ID) {
 	console.error("Missing MAIL_GMAIL_ID")
