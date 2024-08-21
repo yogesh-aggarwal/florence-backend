@@ -1,4 +1,5 @@
 import { Router } from "express"
+import swaggerUI from "swagger-ui-express"
 
 import authMiddleware from "./middlewares/auth"
 import { authRouter } from "./routers/auth"
@@ -6,6 +7,7 @@ import { orderRouter } from "./routers/orders"
 import { platformRouter } from "./routers/platform"
 import { productRouter } from "./routers/product"
 import { userRouter } from "./routers/user"
+import { swaggerSpec } from "./core/swagger"
 
 export const v1 = Router()
 
@@ -14,6 +16,7 @@ export const v1 = Router()
 // ----------------------------------------------------------------------------
 
 v1.get("/health", (_, res) => res.status(200).send("OK"))
+v1.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec))
 
 // ----------------------------------------------------------------------------
 // Routers
