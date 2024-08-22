@@ -40,7 +40,7 @@ if (!GOOGLE_MAPS_API_KEY) {
 
 export const MAIL_GMAIL_AUTH_ID: string = process.env.MAIL_GMAIL_AUTH_ID || ""
 if (!MAIL_GMAIL_AUTH_ID) {
-	console.error("Missing MAIL_GMAIL_ID")
+	console.error("Missing MAIL_GMAIL_AUTH_ID")
 	process.exit(1)
 }
 
