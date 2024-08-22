@@ -7,9 +7,4 @@ export type PlatformHomeSection_t = {
 	sections: Record<string, PlatformHomeSectionSection_t>
 }
 
-export type PlatformCoupons_t = {
-	id: "coupons"
-	coupons: Record<string, number>
-}
-
-export type Platform_t = PlatformHomeSection_t | PlatformCoupons_t
+export type Platform_t = PlatformHomeSection_t
