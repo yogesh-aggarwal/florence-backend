@@ -2,14 +2,14 @@ import mongoose, { Schema, Types } from "mongoose"
 
 // --------------------------------------------------------------------------------------
 
-const WarehouseMetadataSchema = new Schema({
+const SellerMetadataSchema = new Schema({
 	createdAt: { type: Number, required: true },
 	createdBy: { type: String, required: true },
 	updatedAt: { type: Number, required: true },
 	updatedBy: { type: String, required: true },
 })
 
-const WarehouseAddressSchema = new Schema({
+const SellerAddressSchema = new Schema({
 	city: { type: String, required: true },
 	state: { type: String, required: true },
 	country: { type: String, required: true },
@@ -21,28 +21,24 @@ const WarehouseAddressSchema = new Schema({
 	longitude: { type: Number, required: true },
 })
 
-const WarehouseContactDetailsSchema = new Schema({
+const SellerContactDetailsSchema = new Schema({
 	email: { type: String, required: true },
 	phoneNumber: { type: String, required: true },
 })
 
-const WarehouseInventorySchema = new Schema({}, { strict: false })
+const SellerInventorySchema = new Schema({}, { strict: false })
 
-const WarehouseSchema = new Schema({
+const SellerSchema = new Schema({
 	_id: { type: Types.ObjectId, required: true },
-	metadata: { type: WarehouseMetadataSchema, required: true },
+	metadata: { type: SellerMetadataSchema, required: true },
 	name: { type: String, required: true },
-	address: { type: WarehouseAddressSchema, required: true },
-	contactDetails: { type: WarehouseContactDetailsSchema, required: true },
-	inventory: { type: WarehouseInventorySchema, required: true },
+	address: { type: SellerAddressSchema, required: true },
+	contactDetails: { type: SellerContactDetailsSchema, required: true },
+	inventory: { type: SellerInventorySchema, required: true },
 })
 
 // --------------------------------------------------------------------------------------
 
-export const WarehouseModel = mongoose.model(
-	"warehouse",
-	WarehouseSchema,
-	"warehouses"
-)
+export const SellerModel = mongoose.model("seller", SellerSchema, "sellers")
 
 // --------------------------------------------------------------------------------------

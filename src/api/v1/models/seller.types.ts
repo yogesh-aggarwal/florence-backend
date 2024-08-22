@@ -3,17 +3,17 @@ import { z } from "zod"
 
 // --------------------------------------------------------------------------------------
 
-export const WarehouseMetadata_t = z.object({
+export const SellerMetadata_t = z.object({
 	createdAt: z.number(),
 	createdBy: z.string(),
 	updatedAt: z.number(),
 	updatedBy: z.string(),
 })
-export type WarehouseMetadata_t = z.infer<typeof WarehouseMetadata_t>
+export type SellerMetadata_t = z.infer<typeof SellerMetadata_t>
 
 // --------------------------------------------------------------------------------------
 
-export const WarehouseAddress_t = z.object({
+export const SellerAddress_t = z.object({
 	city: z.string(),
 	state: z.string(),
 	country: z.string(),
@@ -24,35 +24,33 @@ export const WarehouseAddress_t = z.object({
 	latitude: z.number(),
 	longitude: z.number(),
 })
-export type WarehouseAddress_t = z.infer<typeof WarehouseAddress_t>
+export type SellerAddress_t = z.infer<typeof SellerAddress_t>
 
 // --------------------------------------------------------------------------------------
 
-export const WarehouseContactDetails_t = z.object({
+export const SellerContactDetails_t = z.object({
 	email: z.string(),
 	phoneNumber: z.string(),
 })
-export type WarehouseContactDetails_t = z.infer<
-	typeof WarehouseContactDetails_t
->
+export type SellerContactDetails_t = z.infer<typeof SellerContactDetails_t>
 
 // --------------------------------------------------------------------------------------
 
-export const WarehouseInventory_t = z.record(z.number())
-export type WarehouseInventory_t = z.infer<typeof WarehouseInventory_t>
+export const SellerInventory_t = z.record(z.number())
+export type SellerInventory_t = z.infer<typeof SellerInventory_t>
 
 // --------------------------------------------------------------------------------------
 
-export const Warehouse_t = z.object({
+export const Seller_t = z.object({
 	_id: z.instanceof(Types.ObjectId),
-	metadata: WarehouseMetadata_t,
+	metadata: SellerMetadata_t,
 
 	name: z.string(),
-	address: WarehouseAddress_t,
-	contactDetails: WarehouseContactDetails_t,
+	address: SellerAddress_t,
+	contactDetails: SellerContactDetails_t,
 
-	inventory: WarehouseInventory_t,
+	inventory: SellerInventory_t,
 })
-export type Warehouse_t = z.infer<typeof Warehouse_t>
+export type Seller_t = z.infer<typeof Seller_t>
 
 // --------------------------------------------------------------------------------------

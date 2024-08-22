@@ -9,7 +9,7 @@ const TOTAL_MAXIMUM_FARE_IN_INR = 500
 
 // --------------------------------------------------------------------------------------
 
-export async function findNearestWarehouse(
+export async function findNearestSeller(
 	address: UserAddress_t
 ): Promise<[number, number]> {
 	// TODO: Find nearest facility
@@ -49,8 +49,8 @@ export async function calculateOrderDeliveryQuotation(
 		total: 0,
 	}
 
-	// Calculate distance from the nearest warehouse
-	const sourceAddress = await findNearestWarehouse(address)
+	// Calculate distance from the nearest seller
+	const sourceAddress = await findNearestSeller(address)
 	const targetAddress: [number, number] = [address.latitude, address.longitude]
 	const distanceInKM = await calculateDistanceInKM(sourceAddress, targetAddress)
 
