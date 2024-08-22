@@ -1,4 +1,5 @@
 import mongoose, { Schema, Types } from "mongoose"
+import { Seller_t } from "./seller.types"
 
 // --------------------------------------------------------------------------------------
 
@@ -39,6 +40,10 @@ const SellerSchema = new Schema({
 
 // --------------------------------------------------------------------------------------
 
-export const SellerModel = mongoose.model("seller", SellerSchema, "sellers")
+export const SellerModel = mongoose.model<Seller_t>(
+	"seller",
+	SellerSchema,
+	"sellers"
+)
 
 // --------------------------------------------------------------------------------------

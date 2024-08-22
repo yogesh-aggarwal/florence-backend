@@ -1,4 +1,5 @@
-import { model, Schema } from "mongoose"
+import { model, Schema, Types } from "mongoose"
+import { Reciept_t } from "./reciepts.types"
 
 // --------------------------------------------------------------------------------------
 
@@ -10,13 +11,17 @@ const RecieptMetadataSchema = new Schema({
 })
 
 const RecieptSchema = new Schema({
-	id: { type: String, required: true },
+	_id: { type: Types.ObjectId, required: true },
 	metadata: { type: RecieptMetadataSchema, required: true },
 	url: { type: String, required: true },
 })
 
 // --------------------------------------------------------------------------------------
 
-export const RecieptModel = model("reciept", RecieptSchema, "reciepts")
+export const RecieptModel = model<Reciept_t>(
+	"reciept",
+	RecieptSchema,
+	"reciepts"
+)
 
 // --------------------------------------------------------------------------------------

@@ -1,4 +1,5 @@
 import { model, Schema, Types } from "mongoose"
+import { UserViewHistory_t } from "./userViewHistory.types"
 
 // --------------------------------------------------------------------------------------
 
@@ -15,7 +16,7 @@ const UserViewHistorySchema = new Schema({
 
 // --------------------------------------------------------------------------------------
 
-export const UserViewHistoryModel = model(
+export const UserViewHistoryModel = model<UserViewHistory_t>(
 	"user_view_history",
 	UserViewHistorySchema,
 	"user_view_history"

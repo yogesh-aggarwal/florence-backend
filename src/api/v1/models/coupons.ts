@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose"
+import { Coupon_t } from "./coupons.types"
 
 // --------------------------------------------------------------------------------------
 
@@ -24,6 +25,10 @@ const CouponSchema = new Schema({
 
 // --------------------------------------------------------------------------------------
 
-export const CouponModel = mongoose.model("coupon", CouponSchema, "coupons")
+export const CouponModel = mongoose.model<Coupon_t>(
+	"coupon",
+	CouponSchema,
+	"coupons"
+)
 
 // --------------------------------------------------------------------------------------
