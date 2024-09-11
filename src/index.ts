@@ -11,19 +11,19 @@ import { ALLOWED_ORIGINS, MONGO_URI, PORT } from "./core/constants"
 
 const app = express()
 {
-	// Middlewares
-	app.use(express.json())
-	app.use(cors({ origin: ALLOWED_ORIGINS }))
+   // Middlewares
+   app.use(express.json())
+   app.use(cors({ origin: ALLOWED_ORIGINS }))
 
-	app.get("/", (_, res) => {
-		res.redirect("/v1")
-	})
+   app.get("/", (_, res) => {
+      res.redirect("/v1")
+   })
 
-	// Health check
-	app.get("/health", (_, res) => res.status(200).send("OK"))
+   // Health check
+   app.get("/health", (_, res) => res.status(200).send("OK"))
 
-	// Routers
-	app.use("/v1", v1)
+   // Routers
+   app.use("/v1", v1)
 }
 
 // ----------------------------------------------------------------------------
@@ -31,12 +31,12 @@ const app = express()
 // ----------------------------------------------------------------------------
 
 async function main() {
-	await mongoose.connect(MONGO_URI)
+   await mongoose.connect(MONGO_URI)
 
-	console.log("✅ Mongo connected")
-	app.listen(PORT, () => {
-		console.log(`\n🚀 Server started at:\n   http://localhost:${PORT}`)
-	})
+   console.log("✅ Mongo connected")
+   app.listen(PORT, () => {
+      console.log(`\n🚀 Server started at:\n   http://localhost:${PORT}`)
+   })
 }
 
 // ----------------------------------------------------------------------------

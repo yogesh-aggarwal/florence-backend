@@ -3,15 +3,15 @@ import { z } from "zod"
 import { User_t } from "../models/user.types"
 
 export function getRequestingUser(req: Request): User_t | null {
-	const user = (req as any)["user"] as User_t | undefined
-	if (!user) return null
+   const user = (req as any)["user"] as User_t | undefined
+   if (!user) return null
 
-	return user
+   return user
 }
 
 export function parseRequestBody<T>(req: Request, schema: z.ZodType): T | null {
-	const body = schema.safeParse(req.body)
-	if (!body.success) return null
+   const body = schema.safeParse(req.body)
+   if (!body.success) return null
 
-	return body.data as T
+   return body.data as T
 }

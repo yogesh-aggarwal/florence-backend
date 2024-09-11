@@ -9,19 +9,17 @@ import { User_t } from "../../models/user.types"
 // --------------------------------------------------------------------------------------
 
 export default async function getWishlistProducts(req: Request, res: Response) {
-	const user: User_t | null = getRequestingUser(req)
-	if (!user) {
-		return res.status(404).json({ message: ResponseMessages.AUTH_INVALID })
-	}
+   const user: User_t | null = getRequestingUser(req)
+   if (!user) {
+      return res.status(404).json({ message: ResponseMessages.AUTH_INVALID })
+   }
 
-	const products: Document<Product_t>[] = await ProductModel.find({
-		_id: { $in: user.data.wishlist },
-	})
-	const parsedProducts = products.map((product) => product.toObject())
+   const products: Document<Product_t>[] = await ProductModel.find({
+      _id: { $in: user.data.wishlist },
+   })
+   const parsedProducts = products.map((product) => product.toObject())
 
-	return res
-		.status(200)
-		.send({ message: ResponseMessages.SUCCESS, data: parsedProducts })
+   return res.status(200).send({ message: ResponseMessages.SUCCESS, data: parsedProducts })
 }
 
 // --------------------------------------------------------------------------------------

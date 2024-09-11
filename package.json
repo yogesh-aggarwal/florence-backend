@@ -1,40 +1,41 @@
 {
-  "name": "e-commerce",
-  "version": "1.0.0",
-  "description": "",
-  "type": "module",
-  "main": "src/index.ts",
-  "scripts": {
-    "dev": "nodemon"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@googlemaps/google-maps-services-js": "^3.4.0",
-    "bcrypt": "^5.1.1",
-    "cors": "^2.8.5",
-    "express": "^4.19.2",
-    "google-auth-library": "^9.7.0",
-    "jsonwebtoken": "^9.0.2",
-    "mongodb": "^5.9.2",
-    "mongoose": "^7.6.11",
-    "nanoid": "^5.0.7",
-    "nodemailer": "^6.9.14",
-    "razorpay": "^2.9.2",
-    "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1",
-    "zod": "^3.23.8"
-  },
-  "devDependencies": {
-    "@types/bcrypt": "^5.0.2",
-    "@types/cors": "^2.8.17",
-    "@types/express": "^4.17.21",
-    "@types/jsonwebtoken": "^9.0.6",
-    "@types/nodemailer": "^6.4.15",
-    "@types/swagger-jsdoc": "^6.0.4",
-    "@types/swagger-ui-express": "^4.1.6",
-    "dotenv": "^16.4.5",
-    "nodemon": "^2.0.22",
-    "tsx": "^4.17.0"
-  }
+   "name": "e-commerce",
+   "version": "1.0.0",
+   "description": "",
+   "type": "module",
+   "main": "src/index.ts",
+   "scripts": {
+      "dev": "nodemon",
+      "pretty": "prettier --config .prettierrc --write ./src/*"
+   },
+   "author": "",
+   "license": "ISC",
+   "dependencies": {
+      "@googlemaps/google-maps-services-js": "^3.4.0",
+      "bcrypt": "^5.1.1",
+      "cors": "^2.8.5",
+      "express": "^4.19.2",
+      "google-auth-library": "^9.7.0",
+      "jsonwebtoken": "^9.0.2",
+      "mongodb": "^5.9.2",
+      "mongoose": "^7.6.11",
+      "nanoid": "^5.0.7",
+      "nodemailer": "^6.9.14",
+      "razorpay": "^2.9.2",
+      "swagger-jsdoc": "^6.2.8",
+      "swagger-ui-express": "^5.0.1",
+      "zod": "^3.23.8"
+   },
+   "devDependencies": {
+      "@types/bcrypt": "^5.0.2",
+      "@types/cors": "^2.8.17",
+      "@types/express": "^4.17.21",
+      "@types/jsonwebtoken": "^9.0.6",
+      "@types/nodemailer": "^6.4.15",
+      "@types/swagger-jsdoc": "^6.0.4",
+      "@types/swagger-ui-express": "^4.1.6",
+      "dotenv": "^16.4.5",
+      "nodemon": "^2.0.22",
+      "tsx": "^4.17.0"
+   }
 }

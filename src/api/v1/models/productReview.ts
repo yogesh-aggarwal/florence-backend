@@ -4,26 +4,26 @@ import { ProductReview_t } from "./productReview.types"
 // --------------------------------------------------------------------------------------
 
 const ProductReviewMetadataSchema = new Schema({
-	createdBy: { type: String, required: true },
-	createdAt: { type: Number, required: true },
-	editedAt: { type: Number, required: true },
-	isEdited: { type: Boolean, required: true },
+   createdBy: { type: String, required: true },
+   createdAt: { type: Number, required: true },
+   editedAt: { type: Number, required: true },
+   isEdited: { type: Boolean, required: true },
 })
 
 const ProductReviewSchema = new Schema({
-	_id: { type: mongoose.Types.ObjectId, required: true },
-	metadata: { type: ProductReviewMetadataSchema, required: true },
-	productID: { type: String, required: true },
-	starsGiven: { type: Number, required: true },
-	reviewContent: { type: String, required: true },
+   _id: { type: mongoose.Types.ObjectId, required: true },
+   metadata: { type: ProductReviewMetadataSchema, required: true },
+   productID: { type: String, required: true },
+   starsGiven: { type: Number, required: true },
+   reviewContent: { type: String, required: true },
 })
 
 // --------------------------------------------------------------------------------------
 
 export const ProductReviewModel = model<ProductReview_t>(
-	"product_review",
-	ProductReviewSchema,
-	"product_reviews"
+   "product_review",
+   ProductReviewSchema,
+   "product_reviews"
 )
 
 // --------------------------------------------------------------------------------------

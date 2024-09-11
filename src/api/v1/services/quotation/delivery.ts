@@ -9,59 +9,57 @@ const TOTAL_MAXIMUM_FARE_IN_INR = 500
 
 // --------------------------------------------------------------------------------------
 
-export async function findNearestSeller(
-	address: UserAddress_t
-): Promise<[number, number]> {
-	// TODO: Find nearest facility
-	return [0, 0]
+export async function findNearestSeller(address: UserAddress_t): Promise<[number, number]> {
+   // TODO: Find nearest facility
+   return [0, 0]
 }
 
 // --------------------------------------------------------------------------------------
 
 export async function calculateDistanceInKM(
-	address1: [number, number],
-	address2: [number, number]
+   address1: [number, number],
+   address2: [number, number]
 ): Promise<number> {
-	return 0
+   return 0
 
-	const client = new Client()
-	const res = await client.distancematrix({
-		params: {
-			origins: [address1],
-			destinations: [address2],
-			key: GOOGLE_MAPS_API_KEY,
-		},
-	})
-	const distanceInMeters = res.data.rows[0].elements[0].distance.value
-	const distanceInKM = distanceInMeters / 1000
+   const client = new Client()
+   const res = await client.distancematrix({
+      params: {
+         origins: [address1],
+         destinations: [address2],
+         key: GOOGLE_MAPS_API_KEY,
+      },
+   })
+   const distanceInMeters = res.data.rows[0].elements[0].distance.value
+   const distanceInKM = distanceInMeters / 1000
 
-	return distanceInKM
+   return distanceInKM
 }
 
 // --------------------------------------------------------------------------------------
 
 export async function calculateOrderDeliveryQuotation(
-	address: UserAddress_t
+   address: UserAddress_t
 ): Promise<OrderPaymentDetailsQuotationDelivery_t> {
-	const quotation: OrderPaymentDetailsQuotationDelivery_t = {
-		base: BASE_FARE_IN_INR,
-		additional: 0,
-		total: 0,
-	}
+   const quotation: OrderPaymentDetailsQuotationDelivery_t = {
+      base: BASE_FARE_IN_INR,
+      additional: 0,
+      total: 0,
+   }
 
-	// Calculate distance from the nearest seller
-	const sourceAddress = await findNearestSeller(address)
-	const targetAddress: [number, number] = [address.latitude, address.longitude]
-	const distanceInKM = await calculateDistanceInKM(sourceAddress, targetAddress)
+   // Calculate distance from the nearest seller
+   const sourceAddress = await findNearestSeller(address)
+   const targetAddress: [number, number] = [address.latitude, address.longitude]
+   const distanceInKM = await calculateDistanceInKM(sourceAddress, targetAddress)
 
-	// Calculate additional fare
-	quotation.additional = ADDITIONAL_FARE_PER_KM_IN_INR * distanceInKM
-	quotation.total = quotation.base + quotation.additional
+   // Calculate additional fare
+   quotation.additional = ADDITIONAL_FARE_PER_KM_IN_INR * distanceInKM
+   quotation.total = quotation.base + quotation.additional
 
-	// Cap the total fare
-	quotation.total = Math.min(quotation.total, TOTAL_MAXIMUM_FARE_IN_INR)
+   // Cap the total fare
+   quotation.total = Math.min(quotation.total, TOTAL_MAXIMUM_FARE_IN_INR)
 
-	return quotation
+   return quotation
 }
 
 // --------------------------------------------------------------------------------------
