@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
 import { Document } from "mongoose"
+import { RECOMMENDATION_API_URI } from "../../../../core/constants"
 import { getRequestingUser } from "../../core/helpers"
 import { ResponseMessages } from "../../core/messages"
 import { PlatformModel } from "../../models/platform"
@@ -10,7 +11,7 @@ import { Product_t } from "../../models/product.types"
 // --------------------------------------------------------------------------------------
 
 async function fetchRecommendedProductIDS(userEmail: string): Promise<string[] | null> {
-   const url = "http://127.0.0.1:5000/recommended_products"
+   const url = `${RECOMMENDATION_API_URI}/recommended_products`
 
    const fetchRes = await fetch(url, {
       method: "POST",

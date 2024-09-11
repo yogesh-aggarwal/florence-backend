@@ -61,3 +61,9 @@ if (!RAZORPAY_SECRET) {
    console.error("Missing RAZORPAY_SECRET")
    process.exit(1)
 }
+
+export const RECOMMENDATION_API_URI: string = process.env.RECOMMENDATION_API_URI || ""
+if (!RECOMMENDATION_API_URI) {
+   console.error("Missing RECOMMENDATION_API_URI")
+   process.exit(1)
+}
