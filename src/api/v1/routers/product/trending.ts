@@ -5,10 +5,14 @@ import { ProductModel } from "../../models/product"
 // --------------------------------------------------------------------------------------
 
 export default async function getTrendingProducts(req: Request, res: Response) {
-   const products = await ProductModel.find({}).limit(30)
-   const parsedProducts = products.map((product) => product.toObject())
+   try {
+      const products = await ProductModel.find({}).limit(30)
+      const parsedProducts = products.map((product) => product.toObject())
 
-   return res.status(200).send({ message: ResponseMessages.SUCCESS, data: parsedProducts })
+      return res.status(200).send({ message: ResponseMessages.SUCCESS, data: parsedProducts })
+   } catch {
+      return res.status(500).send({ message: ResponseMessages.INTERNAL_SERVER_ERROR })
+   }
 }
 
 // --------------------------------------------------------------------------------------

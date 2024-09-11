@@ -15,18 +15,22 @@ const bodySchema = z.object({
 // --------------------------------------------------------------------------------------
 
 export default async function getProductsByIDS(req: Request, res: Response) {
-   const body = parseRequestBody<z.infer<typeof bodySchema>>(req, bodySchema)
-   if (!body) {
-      return res.status(400).send({ message: ResponseMessages.INVALID_BODY_CONTENT })
+   try {
+      const body = parseRequestBody<z.infer<typeof bodySchema>>(req, bodySchema)
+      if (!body) {
+         return res.status(400).send({ message: ResponseMessages.INVALID_BODY_CONTENT })
+      }
+
+      // TODO: View counting here? Do we need to increase the view count of the product?
+      const products: Document<Product_t>[] = await ProductModel.find({
+         _id: { $in: body.ids },
+      })
+      const parsedProducts = products.map((product) => product.toObject())
+
+      return res.status(200).send({ message: ResponseMessages.SUCCESS, data: parsedProducts })
+   } catch {
+      return res.status(500).send({ message: ResponseMessages.INTERNAL_SERVER_ERROR })
    }
-
-   // TODO: View counting here? Do we need to increase the view count of the product?
-   const products: Document<Product_t>[] = await ProductModel.find({
-      _id: { $in: body.ids },
-   })
-   const parsedProducts = products.map((product) => product.toObject())
-
-   return res.status(200).send({ message: ResponseMessages.SUCCESS, data: parsedProducts })
 }
 
 // --------------------------------------------------------------------------------------

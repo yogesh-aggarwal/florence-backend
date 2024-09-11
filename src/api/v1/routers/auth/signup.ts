@@ -26,34 +26,38 @@ const bodySchema = z.object({
 // --------------------------------------------------------------------------------------
 
 export default async function authSignup(req: Request, res: Response) {
-   /**
-    * Step 1: Retrieving the information of user
-    */
-   const body = parseRequestBody<z.infer<typeof bodySchema>>(req, bodySchema)
-   if (!body) {
-      return res.status(400).send({ message: ResponseMessages.INVALID_BODY_CONTENT })
+   try {
+      /**
+       * Step 1: Retrieving the information of user
+       */
+      const body = parseRequestBody<z.infer<typeof bodySchema>>(req, bodySchema)
+      if (!body) {
+         return res.status(400).send({ message: ResponseMessages.INVALID_BODY_CONTENT })
+      }
+
+      /**
+       * Step 2: Checking if user already exists, if yes raise error
+       */
+      const doesExists = await UserModel.exists({ email: body.email })
+      console.log(doesExists)
+      if (doesExists) {
+         return res.status(409).send({ message: ResponseMessages.RESOURCE_ALREADY_EXISTS })
+      }
+
+      /**
+       * Step 3: Creating a variable which stores the information of the new user
+       */
+      const user = await createNewUser(body)
+
+      /**
+       * Step 4: Saving credentials of new user to the database and generating a token for the user
+       */
+      const token: string = jwt.sign(body.email, JWT_SECRET)
+
+      return res.status(200).send({ message: ResponseMessages.SUCCESS, token: token, user: user })
+   } catch {
+      return res.status(500).send({ message: ResponseMessages.INTERNAL_SERVER_ERROR })
    }
-
-   /**
-    * Step 2: Checking if user already exists, if yes raise error
-    */
-   const doesExists = await UserModel.exists({ email: body.email })
-   console.log(doesExists)
-   if (doesExists) {
-      return res.status(409).send({ message: ResponseMessages.RESOURCE_ALREADY_EXISTS })
-   }
-
-   /**
-    * Step 3: Creating a variable which stores the information of the new user
-    */
-   const user = await createNewUser(body)
-
-   /**
-    * Step 4: Saving credentials of new user to the database and generating a token for the user
-    */
-   const token: string = jwt.sign(body.email, JWT_SECRET)
-
-   return res.status(200).send({ message: ResponseMessages.SUCCESS, token: token, user: user })
 }
 
 // --------------------------------------------------------------------------------------

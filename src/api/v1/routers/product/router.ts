@@ -8,9 +8,10 @@ import getTrendingProducts from "./trending"
 
 export const productRouter = Router()
 
-productRouter.get("/:id", getProductByID)
 productRouter.get("/all", getAllProducts)
 productRouter.get("/category/:id", getProductsByCategory)
 productRouter.get("/search/:query", getProductsBySearch)
 productRouter.get("/trending", getTrendingProducts)
 productRouter.get("/getByIDS", getProductsByIDS)
+
+productRouter.get("/:id", getProductByID)

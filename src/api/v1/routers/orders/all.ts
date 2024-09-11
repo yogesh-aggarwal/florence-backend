@@ -3,13 +3,14 @@ import jwt from "jsonwebtoken"
 import { ObjectId } from "mongodb"
 
 import { JWT_SECRET } from "../../../../core/constants"
+import { ResponseMessages } from "../../core/messages"
 import { OrderModel } from "../../models/orders"
 import { UserModel } from "../../models/user"
 
 // --------------------------------------------------------------------------------------
 
 export default async function getAllOrders(req: Request, res: Response) {
-   {
+   try {
       // TODO:
       const token = req.headers["authorization"]!.replace("Bearer", "").trim()
 
@@ -44,6 +45,8 @@ export default async function getAllOrders(req: Request, res: Response) {
          res.status(401).send({ message: "Unauthorized" })
          return
       }
+   } catch {
+      return res.status(500).send({ message: ResponseMessages.INTERNAL_SERVER_ERROR })
    }
 }
 

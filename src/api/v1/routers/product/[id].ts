@@ -62,28 +62,32 @@ async function addToViewHistory(userID: string, productID: string) {
 // --------------------------------------------------------------------------------------
 
 export default async function getProductByID(req: Request, res: Response) {
-   const product: Product_t | null = await ProductModel.findOne({
-      _id: { $eq: req.params.id },
-   })
-   if (!product) {
-      return res.status(404).send({
-         message: ResponseMessages.INVALID_RESOURCE_ID,
+   try {
+      const product: Product_t | null = await ProductModel.findOne({
+         _id: req.params.id,
       })
-   }
+      if (!product) {
+         return res.status(404).send({
+            message: ResponseMessages.INVALID_RESOURCE_ID,
+         })
+      }
 
-   /**
-    * TODO: Add to view history in a non blocking way.
-    *
-    * Maybe use a threaded queue? (Not recommended, the system might die & we'll end up lose data)
-    * Or a separate microservice? (Not recommended, too much overhead)
-    * Or kafka? (Seems most appropriate, it guarantees delivery)
-    */
-   const user = getRequestingUser(req)
-   if (user) {
-      await addToViewHistory(user._id.toString(), req.params.id)
-   }
+      /**
+       * TODO: Add to view history in a non blocking way.
+       *
+       * Maybe use a threaded queue? (Not recommended, the system might die & we'll end up lose data)
+       * Or a separate microservice? (Not recommended, too much overhead)
+       * Or kafka? (Seems most appropriate, it guarantees delivery)
+       */
+      const user = getRequestingUser(req)
+      if (user) {
+         await addToViewHistory(user._id.toString(), req.params.id)
+      }
 
-   return res.status(200).send({ message: ResponseMessages.SUCCESS, data: product })
+      return res.status(200).send({ message: ResponseMessages.SUCCESS, data: product })
+   } catch {
+      return res.status(500).send({ message: ResponseMessages.INTERNAL_SERVER_ERROR })
+   }
 }
 
 // --------------------------------------------------------------------------------------

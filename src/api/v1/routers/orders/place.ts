@@ -97,46 +97,50 @@ async function createOrder(body: z.infer<typeof bodySchema>, userID: string) {
 // --------------------------------------------------------------------------------------
 
 export default async function placeOrder(req: Request, res: Response) {
-   /**
-    * Step 1: Gather all the required data from the request
-    */
-   const body = parseRequestBody<z.infer<typeof bodySchema>>(req, bodySchema)
-   if (!body) {
-      return res.status(400).send({ message: ResponseMessages.INVALID_BODY_CONTENT })
+   try {
+      /**
+       * Step 1: Gather all the required data from the request
+       */
+      const body = parseRequestBody<z.infer<typeof bodySchema>>(req, bodySchema)
+      if (!body) {
+         return res.status(400).send({ message: ResponseMessages.INVALID_BODY_CONTENT })
+      }
+
+      /**
+       * Step 2: Check if the order is already placed
+       */
+      const doesAlreadyExists = await OrderModel.exists({
+         orderID: body.razorpayOrderID,
+      })
+      if (doesAlreadyExists) {
+         return res.status(400).send({ message: ResponseMessages.INVALID_REQUEST })
+      }
+
+      /**
+       * Step 3: Verify the payment & if not paid, return an error
+       */
+      const isPaid = await verifyOrderPayment(body.razorpayOrderID)
+      if (!isPaid) {
+         return res.status(400).send({ message: ResponseMessages.INVALID_REQUEST })
+      }
+
+      /**
+       * Step 4: Prepare the order
+       */
+      const user = getRequestingUser(req)
+      if (!user) {
+         return res.status(401).send({ message: ResponseMessages.AUTH_INVALID })
+      }
+      const order = await createOrder(body, user._id.toString())
+
+      // Send the order confirmation email
+      // TODO: May be dispatch it to a queuing system like kafka for non-blocking & guaranteed delivery
+      await sendEmail(MailFactory.orderPlaced(user.email, order._id.toString()))
+
+      return res.status(200).send({ message: ResponseMessages.SUCCESS, data: { orderID: order._id } })
+   } catch {
+      return res.status(500).send({ message: ResponseMessages.INTERNAL_SERVER_ERROR })
    }
-
-   /**
-    * Step 2: Check if the order is already placed
-    */
-   const doesAlreadyExists = await OrderModel.exists({
-      orderID: body.razorpayOrderID,
-   })
-   if (doesAlreadyExists) {
-      return res.status(400).send({ message: ResponseMessages.INVALID_REQUEST })
-   }
-
-   /**
-    * Step 3: Verify the payment & if not paid, return an error
-    */
-   const isPaid = await verifyOrderPayment(body.razorpayOrderID)
-   if (!isPaid) {
-      return res.status(400).send({ message: ResponseMessages.INVALID_REQUEST })
-   }
-
-   /**
-    * Step 4: Prepare the order
-    */
-   const user = getRequestingUser(req)
-   if (!user) {
-      return res.status(401).send({ message: ResponseMessages.AUTH_INVALID })
-   }
-   const order = await createOrder(body, user._id.toString())
-
-   // Send the order confirmation email
-   // TODO: May be dispatch it to a queuing system like kafka for non-blocking & guaranteed delivery
-   await sendEmail(MailFactory.orderPlaced(user.email, order._id.toString()))
-
-   return res.status(200).send({ message: ResponseMessages.SUCCESS, data: { orderID: order._id } })
 }
 
 // --------------------------------------------------------------------------------------

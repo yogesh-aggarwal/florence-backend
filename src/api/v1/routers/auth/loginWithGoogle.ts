@@ -21,48 +21,52 @@ const bodySchema = z.object({
 // --------------------------------------------------------------------------------------
 
 export default async function authLoginWithGoogle(req: Request, res: Response) {
-   /**
-    * Step 1: Gather all the required data from the request
-    */
-   const body = parseRequestBody<z.infer<typeof bodySchema>>(req, bodySchema)
-   if (!body) {
-      return res.status(400).send({ message: ResponseMessages.INVALID_BODY_CONTENT })
-   }
+   try {
+      /**
+       * Step 1: Gather all the required data from the request
+       */
+      const body = parseRequestBody<z.infer<typeof bodySchema>>(req, bodySchema)
+      if (!body) {
+         return res.status(400).send({ message: ResponseMessages.INVALID_BODY_CONTENT })
+      }
 
-   /**
-    * Step 2: Verify the OAuth token
-    */
-   const response = await client.verifyIdToken({
-      idToken: body.tokenID,
-      audience: client._clientId,
-   })
-   const payload = response.getPayload()
-   if (!payload || !payload.email) {
-      return res.status(400).send({ message: ResponseMessages.AUTH_INVALID })
-   }
-
-   /**
-    * Step 3: Check if the user exists. If not, create a new user.
-    */
-   let user: User_t | null = (
-      await UserModel.findOne({
-         email: payload.email,
+      /**
+       * Step 2: Verify the OAuth token
+       */
+      const response = await client.verifyIdToken({
+         idToken: body.tokenID,
+         audience: client._clientId,
       })
-   )?.toObject() as any
-   if (!user) {
-      user = await createNewUser({
-         email: payload.email,
-         name: payload.name ?? "Someone Special",
-         password: "",
-      })
+      const payload = response.getPayload()
+      if (!payload || !payload.email) {
+         return res.status(400).send({ message: ResponseMessages.AUTH_INVALID })
+      }
+
+      /**
+       * Step 3: Check if the user exists. If not, create a new user.
+       */
+      let user: User_t | null = (
+         await UserModel.findOne({
+            email: payload.email,
+         })
+      )?.toObject() as any
+      if (!user) {
+         user = await createNewUser({
+            email: payload.email,
+            name: payload.name ?? "Someone Special",
+            password: "",
+         })
+      }
+
+      /**
+       * Step 4: Generate the JWT token and send it back to the user
+       */
+      const token: string = jwt.sign(user.email, JWT_SECRET)
+
+      return res.status(200).send({ message: ResponseMessages.SUCCESS, token: token, user: user })
+   } catch {
+      return res.status(500).send({ message: ResponseMessages.INTERNAL_SERVER_ERROR })
    }
-
-   /**
-    * Step 4: Generate the JWT token and send it back to the user
-    */
-   const token: string = jwt.sign(user.email, JWT_SECRET)
-
-   return res.status(200).send({ message: ResponseMessages.SUCCESS, token: token, user: user })
 }
 
 // --------------------------------------------------------------------------------------

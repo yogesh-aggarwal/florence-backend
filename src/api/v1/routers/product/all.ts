@@ -8,10 +8,14 @@ import { Product_t } from "../../models/product.types"
 // --------------------------------------------------------------------------------------
 
 export default async function getAllProducts(_: Request, res: Response) {
-   const products: Document<Product_t>[] = await ProductModel.find({})
-   const parsedProducts = products.map((product) => product.toObject())
+   try {
+      const products: Document<Product_t>[] = await ProductModel.find({})
+      const parsedProducts = products.map((product) => product.toObject())
 
-   return res.status(200).send({ message: ResponseMessages.SUCCESS, data: parsedProducts })
+      return res.status(200).send({ message: ResponseMessages.SUCCESS, data: parsedProducts })
+   } catch {
+      return res.status(500).send({ message: ResponseMessages.INTERNAL_SERVER_ERROR })
+   }
 }
 
 // --------------------------------------------------------------------------------------
