@@ -36,6 +36,7 @@
       "@types/swagger-ui-express": "^4.1.6",
       "dotenv": "^16.4.5",
       "nodemon": "^2.0.22",
+      "prettier": "^3.3.3",
       "ts-node": "^10.9.2",
       "tsx": "^4.17.0"
    }
