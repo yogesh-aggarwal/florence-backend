@@ -50,6 +50,7 @@ export type ProductStats_t = z.infer<typeof ProductStats_t>
 
 export const ProductCosting_t = z.object({
    originalPrice: z.number(),
+   sellingPrice: z.number(),
    discountInPercent: z.number(),
    baseDeliveryCharges: z.number(),
 })

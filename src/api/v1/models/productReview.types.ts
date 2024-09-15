@@ -20,7 +20,7 @@ export const ProductReview_t = z.object({
 
    productID: z.string(),
    rating: z.number(),
-   reviewContent: z.string(),
+   content: z.string(),
 })
 export type ProductReview_t = z.infer<typeof ProductReview_t>
 

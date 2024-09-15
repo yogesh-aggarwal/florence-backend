@@ -16,7 +16,7 @@ const ProductReviewSchema = new Schema({
 
    productID: { type: String, required: true },
    rating: { type: Number, required: true },
-   reviewContent: { type: String, required: true },
+   content: { type: String, required: true },
 })
 
 // --------------------------------------------------------------------------------------

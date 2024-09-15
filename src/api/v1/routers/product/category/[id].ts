@@ -9,7 +9,7 @@ export default async function getProductsByCategory(req: Request, res: Response)
       const id: string = req.params.id
 
       const products = await ProductModel.find({
-         "details.categories": id,
+         "details.categories": { $regex: id, $options: "i" },
       }).limit(30)
       const parsedProducts = products.map((product) => product.toObject())
 

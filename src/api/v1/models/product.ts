@@ -26,6 +26,7 @@ const ProductStatsSchema = new Schema({
 
 const ProductCostingSchema = new Schema({
    originalPrice: { type: Number, required: true },
+   sellingPrice: { type: Number, required: true },
    discountInPercent: { type: Number, required: true },
    baseDeliveryCharges: { type: Number, required: true },
 })
@@ -33,7 +34,6 @@ const ProductCostingSchema = new Schema({
 const ProductSchema = new Schema({
    _id: { type: Types.ObjectId, required: true },
    title: { type: String, required: true },
-   price: { type: Number, required: true },
    images: { type: [String], required: true },
    details: { type: ProductDetailsSchema, required: true },
    stats: { type: ProductStatsSchema, required: true },
