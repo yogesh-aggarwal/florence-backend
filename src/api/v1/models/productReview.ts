@@ -13,8 +13,9 @@ const ProductReviewMetadataSchema = new Schema({
 const ProductReviewSchema = new Schema({
    _id: { type: mongoose.Types.ObjectId, required: true },
    metadata: { type: ProductReviewMetadataSchema, required: true },
+
    productID: { type: String, required: true },
-   starsGiven: { type: Number, required: true },
+   rating: { type: Number, required: true },
    reviewContent: { type: String, required: true },
 })
 

@@ -5,7 +5,7 @@ import { JWT_SECRET } from "../../../core/constants"
 import { ResponseMessages } from "../core/messages"
 import { UserModel } from "../models/user"
 
-export default async function authMiddleware(req: Request, res: Response, next: NextFunction) {
+export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
    const token = req.headers["authorization"]?.replace("Bearer ", "")?.trim()
    if (!token) {
       return res.status(400).send({ message: ResponseMessages.AUTH_INVALID })

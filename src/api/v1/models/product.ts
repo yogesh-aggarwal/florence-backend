@@ -20,7 +20,7 @@ const ProductDetailsSchema = new Schema({
 
 const ProductStatsSchema = new Schema({
    views: { type: Number, required: true },
-   starRatings: { type: Number, required: true },
+   rating: { type: Number, required: true },
    reviewsCount: { type: Number, required: true },
 })
 

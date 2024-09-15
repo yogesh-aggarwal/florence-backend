@@ -2,7 +2,7 @@ import { Router } from "express"
 import swaggerUI from "swagger-ui-express"
 
 import { swaggerSpec } from "./core/swagger"
-import authMiddleware from "./middlewares/auth"
+import { authMiddleware } from "./middlewares/auth"
 import { authRouter } from "./routers/auth/router"
 import { orderRouter } from "./routers/orders/router"
 import { platformRouter } from "./routers/platform/router"

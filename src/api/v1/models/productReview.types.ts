@@ -19,7 +19,7 @@ export const ProductReview_t = z.object({
    metadata: ProductReviewMetadata_t,
 
    productID: z.string(),
-   starsGiven: z.number(),
+   rating: z.number(),
    reviewContent: z.string(),
 })
 export type ProductReview_t = z.infer<typeof ProductReview_t>

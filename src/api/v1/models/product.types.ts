@@ -41,7 +41,7 @@ export type ProductDetails_t = z.infer<typeof ProductDetails_t>
 
 export const ProductStats_t = z.object({
    views: z.number(),
-   starRatings: z.number(),
+   rating: z.number(),
    reviewsCount: z.number(),
 })
 export type ProductStats_t = z.infer<typeof ProductStats_t>
