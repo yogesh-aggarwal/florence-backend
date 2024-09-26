@@ -26,8 +26,6 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
 
       next()
    } catch (error) {
-      console.error("JWT verification error:", error)
-
       res.status(401).send({ message: ResponseMessages.AUTH_INVALID })
    }
 }

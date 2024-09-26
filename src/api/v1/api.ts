@@ -25,9 +25,6 @@ v1.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec))
 // Non-Authenticated Routers
 v1.use("/auth", authRouter)
 
-// Middlewares
-v1.use(authMiddleware)
-
 // Authenticated Routers
 v1.use("/order", orderRouter)
 v1.use("/platform", platformRouter)
