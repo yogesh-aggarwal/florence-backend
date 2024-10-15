@@ -14,6 +14,12 @@ if (!MONGO_URI) {
    process.exit(1)
 }
 
+export const MONGO_DB_NAME: string = process.env.MONGO_DB_NAME || ""
+if (!MONGO_DB_NAME) {
+   console.error("Missing MONGO_DB_NAME")
+   process.exit(1)
+}
+
 export const JWT_SECRET: string = process.env.JWT_SECRET || ""
 if (!JWT_SECRET) {
    console.error("Missing JWT_SECRET")

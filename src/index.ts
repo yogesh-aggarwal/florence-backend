@@ -3,7 +3,7 @@ import express from "express"
 import mongoose from "mongoose"
 
 import { v1 } from "./api/v1/api"
-import { ALLOWED_ORIGINS, MONGO_URI, PORT } from "./core/constants"
+import { ALLOWED_ORIGINS, MONGO_DB_NAME, MONGO_URI, PORT } from "./core/constants"
 
 // ----------------------------------------------------------------------------
 // Router
@@ -31,7 +31,7 @@ const app = express()
 // ----------------------------------------------------------------------------
 
 async function main() {
-   await mongoose.connect(MONGO_URI)
+   await mongoose.connect(MONGO_URI, { dbName: MONGO_DB_NAME })
 
    console.log("✅ Mongo connected")
    app.listen(PORT, () => {
